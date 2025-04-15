@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service-webapp
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app: webapp
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-webapp
+spec:
+  containers:
+    - name: webapp
+      image: my-webapp-image
+      ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service-database
+spec:
+  ports:
+    - port: 3306
+      targetPort: 3306
+  selector:
+    app: database
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-database
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: database
+  template:
+    metadata:
+      labels:
+        app: database
+    spec:
+      containers:
+        - name: db
+          image: my-database-image
+          ports:
+            - containerPort: 3306
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-ingress
+spec:
+  rules:
+    - host: webapp.example.com
+      http:
+        paths:
+          - pathType: ImplementationSpecific
+            path: "/*"
+            backend:
+              service:
+                name: my-service-webapp
+                port:
+                  number: 80
+
+    - host: database.example.com
+      http:
+        paths:
+          - pathType: ImplementationSpecific
+            path: "/*"
+            backend:
+              service:
+                name: my-service-database
+                port:
+                  number: 3306

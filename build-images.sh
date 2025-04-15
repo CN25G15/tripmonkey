@@ -14,6 +14,12 @@ echo "  ______ ______ ______ ______ ______ ______ ______ ______ ______ ______
 
 echo "\n-------------------------------------\nBuilding images for local docker repo\n-------------------------------------\n"
 
+previous=$(pwd)
+cd supporting-modules
+echo "\ninstalling support modules for java microservices"
+bash mvnw clean install
+cd ..
+
 # Loop over each subdirectory in the current directory
 for dir in */; do
   # Check if a Dockerfile exists in the current directory

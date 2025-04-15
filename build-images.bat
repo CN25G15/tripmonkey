@@ -18,6 +18,12 @@ ECHO Building images for local docker repo
 ECHO ---------------------------------------
 ECHO.
 
+SET previous=%cd%
+ECHO "Installing support modules for java microservices"
+CD %cd%\supporting-modules
+CALL mvnw.cmd clean install
+CD %previous%
+
 FOR /D %%D IN (*) DO (
 
     IF EXIST "%%~D\Dockerfile" (
