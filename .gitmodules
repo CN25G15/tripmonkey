@@ -17,13 +17,13 @@
 	path = keycloak_interface
 	url = git@github.com:CN25G15/keycloak_interface.git
 [submodule "Descriptor-service"]
-	path = Descriptor-service
+	path = descriptor-service
 	url = git@github.com:CN25G15/Descriptor-service.git
 [submodule "Recomendations-service"]
-	path = Recomendations-service
+	path = recomendations-service
 	url = git@github.com:CN25G15/Recomendations-service.git
 [submodule "Trends-service"]
-	path = Trends-service
+	path = trends-service
 	url = git@github.com:CN25G15/Trends-service.git
 [submodule "admin_panel"]
 	path = admin_panel
