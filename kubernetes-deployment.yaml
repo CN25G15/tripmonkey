@@ -152,13 +152,25 @@ spec:
             - targetPort: 27017
           env:
             - name: MONGO_INITDB_ROOT_USERNAME
-              value: toBeDefined
+              valueFrom:
+                secretKeyRef:
+                  name: tripmonkey-secrets
+                  key: mongo_root
             - name: MONGO_INITDB_ROOT_PASSWORD
-              value: toBeDefined
+              valueFrom:
+                secretKeyRef:
+                  name: tripmonkey-secrets
+                  key: mongo_root_password
             - name: MONGODB_USER
-              value: toBeDefined
+              valueFrom:
+                secretKeyRef:
+                  name: tripmonkey-secrets
+                  key: mongo_user
             - name: MONGODB_PASSWORD
-              value: toBeDefined
+              valueFrom:
+                secretKeyRef:
+                  name: tripmonkey-secrets
+                  key: mongo_user_password
 ---
 # ----- Internal Services -----
 ---
@@ -181,9 +193,16 @@ spec:
         - name: MONGO_DATABASE
           value: workspaces
         - name: MONGO_USER
-          value: toBeDefined
+          valueFrom:
+            secretKeyRef:
+              name: tripmonkey-secrets
+              key: mongo_user
+          value:
         - name: MONGO_PASSWORD
-          value: toBeDefined
+          valueFrom:
+            secretKeyRef:
+              name: tripmonkey-secrets
+              key: mongo_user_password
 ---
 apiVersion: v1
 kind: Pod
@@ -206,7 +225,10 @@ spec:
         - name: WORKSPACE_FETCH_HOST
           value: database-service:9095
         - name: GOOGLE_KEY
-          value: toBeDefined
+          valueFrom:
+            secretKeyRef:
+              name: tripmonkey-secrets
+              key: google_maps_api_key
 ---
 apiVersion: v1
 kind: Service
