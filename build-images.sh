@@ -4,7 +4,7 @@ echo "  ______ ______ ______ ______ ______ ______ ______ ______ ______ ______
  |______|______|______|______|______|______|______|______|______|______|
        |__   __| (_)                           | |                      
           | |_ __ _ _ __  _ __ ___   ___  _ __ | | _____ _   _          
-          | | '__| | '_ \| '_ ` _ \ / _ \| '_ \| |/ / _ | | | |         
+          | | '__| | '_ \| '_ \` _ \ / _ \| '_ \| |/ / _ | | | |
           | | |  | | |_) | | | | | | (_) | | | |   |  __| |_| |         
           |_|_|  |_| .__/|_| |_| |_|\___/|_| |_|_|\_\___|\__, |         
                    | |                                    __/ |         
@@ -19,18 +19,18 @@ for dir in */; do
   # Check if a Dockerfile exists in the current directory
   if [ -f "${dir}Dockerfile" ]; then
     # If it does, use docker build to build the image
-    echo "found Dockerfile @ ${dir}"
+    echo "\nfound Dockerfile @ ${dir}"
 	docker build -t "tripmonkey/${dir}" "${dir}"
 	
   else
     # If there's no Dockerfile, look for a script with the name "build-image.sh"
     if [ -x "${dir}build-image.sh" ]; then
       # If it exists and is executable, run the script
-	  echo "found build-image.sh @ ${dir}"
+	  echo "\nfound build-image.sh @ ${dir}"
 	  bash "${dir}build-image.sh"
     else
       # If neither a Dockerfile nor "build-image.sh" exist in this directory, skip it
-      echo "No Dockerfile or build-image.sh found @ ${dir}"
+      echo "\nNo Dockerfile or build-image.sh found @ ${dir}"
     fi
   fi
 done

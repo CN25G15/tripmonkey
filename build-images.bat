@@ -21,12 +21,15 @@ ECHO.
 FOR /D %%D IN (*) DO (
 
     IF EXIST "%%~D\Dockerfile" (
+        ECHO.
         echo found Dockerfile @ %%~D
         docker build -t "tripmonkey/%%~D" "%%~D"
     ) ELSE IF EXIST "%%~D\build-image.bat" (
+        ECHO.
         echo found build-image.bat @ %%~D
         CALL %cd%\%%~D\build-image.bat
     ) ELSE (
+        ECHO.
         ECHO No Dockerfile or build-image.sh found @ %%~D
     )
 )
