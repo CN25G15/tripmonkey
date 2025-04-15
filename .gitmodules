@@ -1,0 +1,33 @@
+[submodule "workspace-service"]
+	path = workspace-service
+	url = git@github.com:CN25G15/workspace-service.git
+[submodule "workspace-rest-service"]
+	path = workspace-rest-service
+	url = git@github.com:CN25G15/workspace-rest-service.git
+[submodule "workspace-db-service"]
+	path = workspace-db-service
+	url = git@github.com:CN25G15/workspace-db-service.git
+[submodule "supporting-modules"]
+	path = supporting-modules
+	url = git@github.com:CN25G15/supporting-modules.git
+[submodule "notification-service"]
+	path = notification-service
+	url = git@github.com:CN25G15/notification-service.git
+[submodule "keycloak_interface"]
+	path = keycloak_interface
+	url = git@github.com:CN25G15/keycloak_interface.git
+[submodule "Descriptor-service"]
+	path = Descriptor-service
+	url = git@github.com:CN25G15/Descriptor-service.git
+[submodule "Recomendations-service"]
+	path = Recomendations-service
+	url = git@github.com:CN25G15/Recomendations-service.git
+[submodule "Trends-service"]
+	path = Trends-service
+	url = git@github.com:CN25G15/Trends-service.git
+[submodule "admin_panel"]
+	path = admin_panel
+	url = git@github.com:CN25G15/admin_panel.git
+[submodule "workspace_backup"]
+	path = workspace_backup
+	url = git@github.com:CN25G15/workspace_backup.git
