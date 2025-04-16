@@ -20,24 +20,34 @@ metadata:
   name: my-ingress
 spec:
   rules:
-    - host: webapp.example.com
+    - host: workspace.local
       http:
         paths:
           - pathType: ImplementationSpecific
-            path: "/*"
+            path: "/notifications/*"
             backend:
               service:
-                name: my-service-webapp
+                name: notifications-service
                 port:
                   number: 80
-    - host: database.example.com
+    - host: workspace.local
       http:
         paths:
           - pathType: ImplementationSpecific
-            path: "/*"
+            path: "/workspace/*"
             backend:
               service:
-                name: my-service-database
+                name: workspace-rest-interface
+                port:
+                  number: 80
+    - host: workspace.local
+      http:
+        paths:
+          - pathType: ImplementationSpecific
+            path: "/recommend/*"
+            backend:
+              service:
+                name: recomendations-service
                 port:
                   number: 3306
 ---
@@ -203,6 +213,11 @@ spec:
             secretKeyRef:
               name: tripmonkey-secrets
               key: mongo_user_password
+      resources:
+        requests:
+          memory: "1Gi"
+        limits:
+          memory: "2Gi"
 ---
 apiVersion: v1
 kind: Pod
@@ -229,6 +244,11 @@ spec:
             secretKeyRef:
               name: tripmonkey-secrets
               key: google_maps_api_key
+      resources:
+        requests:
+          memory: "1Gi"
+        limits:
+          memory: "2Gi"
 ---
 apiVersion: v1
 kind: Service
@@ -271,6 +291,11 @@ spec:
       env:
         - name: SERVICE_PORT
           value: 8080
+      resources:
+        requests:
+          memory: "1Gi"
+        limits:
+          memory: "2Gi"
 ---
 apiVersion: v1
 kind: Pod
@@ -291,6 +316,11 @@ spec:
           value: database-service:9095
         - name: WORKSPACE_REQUEST_HOST
           value: database-service:9095
+      resources:
+        requests:
+          memory: "1Gi"
+        limits:
+          memory: "2Gi"
 ---
 apiVersion: v1
 kind: Pod
@@ -352,3 +382,61 @@ spec:
           targetPort: 5002
           port: 5002
 ---
+# ----- Auto scaling policies -----
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: notifications-service-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: v1
+    kind: Pod
+    name: notifications-service
+  minReplicas: 1
+  maxReplicas: 4
+  metrics:
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: rest-service-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: v1
+    kind: Pod
+    name: rest-service
+  minReplicas: 1
+  maxReplicas: 2
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: database-service-service-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: v1
+    kind: Service
+    name: database-service
+  minReplicas: 1
+  maxReplicas: 2
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80
