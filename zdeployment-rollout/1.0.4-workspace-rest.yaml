@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workspace-rest-interface
+spec:
+  containers:
+    - name: workspace-rest
+      image: sprugit/rest-service
+      ports:
+        - containerPort: 8080
+          targetPort: 8080
+      env:
+        - name: SERVICE_PORT
+          value: 8080
+        - name: PATCH_APPLIER_HOST
+          value: "database-service:9095"
+        - name: WORKSPACE_REQUEST_HOST
+          value: "database-service:9095"
+      resources:
+        requests:
+          memory: "1Gi"
+        limits:
+          memory: "2Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: workspace-rest-interface
+spec:
+  type: ClusterIP
+  selector:
+    app: workspace-rest-interface
+  ports:
+    - name: rest-port
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: autoscaling/v2
+kind: HorizontalDeploymentAutoscaler
+metadata:
+  name: rest-service-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: rest-service
+  minReplicas: 1
+  maxReplicas: 2
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80

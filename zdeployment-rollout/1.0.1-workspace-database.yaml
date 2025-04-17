@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: database-service
+spec:
+  service-name: database-service
+  containers:
+    - name: database-service
+      image: sprugit/database-service
+      ports:
+        - containerPort: 9095
+      env:
+        - name: GRPC_PORT
+          value: 9095
+        - name: MONGO_HOST
+          value: "mongodb://mongodb:27017"
+        - name: MONGO_DATABASE
+          value: workspaces
+        - name: MONGO_USER
+          valueFrom:
+            secretKeyRef:
+              name: tripmonkey-secrets
+              key: mongo_user
+          value:
+        - name: MONGO_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: tripmonkey-secrets
+              key: mongo_user_password
+      resources:
+        requests:
+          memory: "1Gi"
+        limits:
+          memory: "2Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: database-service
+spec:
+  type: ClusterIP
+  selector:
+    app: database-service
+  ports:
+    - name: grpc
+      port: 9095
+      targetPort: 9095
+---
+apiVersion: autoscaling/v2
+kind: HorizontalDeploymentAutoscaler
+metadata:
+  name: database-service-service-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Service
+    name: database-service
+  minReplicas: 1
+  maxReplicas: 2
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80

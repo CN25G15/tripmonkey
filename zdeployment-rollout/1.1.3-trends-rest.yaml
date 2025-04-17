@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trends-rest-interface
+spec:
+  containers:
+    - name: webapp
+      image: sprugit/trends-service
+      ports:
+        - containerPort: 8080
+          targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trends-rest
+spec:
+  type: ClusterIP
+  selector:
+    app: trends-rest
+  ports:
+    - name: rest-port
+      port: 80
+      targetPort: 8080

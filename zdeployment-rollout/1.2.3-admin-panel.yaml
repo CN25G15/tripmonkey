@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-panel
+spec:
+  containers:
+    - name: webapp
+      image: sprugit/admin-panel
+      ports:
+        - containerPort: 47314
+        - port: 47314
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: admin-panel
+spec:
+  type: ClusterIP
+  selector:
+    app: admin-panel
+  ports:
+    - name: admin-port
+      port: 47314
+      targetPort: 47314
