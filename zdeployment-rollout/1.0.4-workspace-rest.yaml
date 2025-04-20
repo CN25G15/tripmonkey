@@ -20,14 +20,28 @@ spec:
             - name: SERVICE_PORT
               value: "8080"
             - name: PATCH_APPLIER_HOST
-              value: "database-service:9095"
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-env
+                  key: SERVICE_HOST
             - name: WORKSPACE_REQUEST_HOST
-              value: "database-service:9095"
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-env
+                  key: SERVICE_HOST
           resources:
             requests:
               memory: "1Gi"
             limits:
               memory: "2Gi"
+          volumeMounts:
+            - name: config
+              mountPath: "/config"
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: config
 ---
 apiVersion: v1
 kind: Service

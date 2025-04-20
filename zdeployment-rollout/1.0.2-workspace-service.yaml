@@ -18,25 +18,54 @@ spec:
             - containerPort: 9095
           env:
             - name: KAFKA_BOOTSTRAP_SERVERS
-              value: "kafka:9092"
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-env
+                  key: KAFKA_BOOTSTRAP_SERVERS
             - name: GRPC_PORT
-              value: "9095"
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-env
+                  key: GRPC_PORT
             - name: PATCH_PERSIST_HOST
-              value: "database-service:9095"
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-env
+                  key: DB_HOST
             - name: WORKSPACE_FETCH_HOST
-              value: "database-service:9095"
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-env
+                  key: DB_HOST
             - name: GOOGLE_KEY
               valueFrom:
                 secretKeyRef:
                   name: tripmonkey-secrets
-                  key: google_maps_api_key
+                  key: GOOGLE_KEY
             - name: KAFKA_NOTIFICATIONS_TOPIC
-              value: "notifications"
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-env
+                  key: KAFKA_NOTIFICATIONS_TOPIC
           resources:
             requests:
               memory: "1Gi"
             limits:
               memory: "2Gi"
+          volumeMounts:
+            - name: config
+              mountPath: "/config"
+              readOnly: true
+            - name: secrets
+              mountPath: "/etc/secrets"
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: config
+        - name: secrets
+          secret:
+            secretName: tripmonkey-secrets
 ---
 apiVersion: v1
 kind: Service

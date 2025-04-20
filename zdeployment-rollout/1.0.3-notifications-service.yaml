@@ -20,12 +20,23 @@ spec:
             - name: SERVICE_PORT
               value: "8080"
             - name: KAFKA_NOTIFICATIONS_TOPIC
-              value: "notifications"
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-env
+                  key: KAFKA_NOTIFICATIONS_TOPIC
           resources:
             requests:
               memory: "1Gi"
             limits:
               memory: "2Gi"
+          volumeMounts:
+            - name: config
+              mountPath: "/config"
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: config
 ---
 apiVersion: v1
 kind: Service

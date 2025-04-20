@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: webapp
-          image: sprugit/admin-panel
+          image: sprugit/admin_panel
           ports:
             - containerPort: 47314
 ---

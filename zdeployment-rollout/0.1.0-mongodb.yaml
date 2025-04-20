@@ -22,22 +22,30 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: tripmonkey-secrets
-                  key: mongo_root
+                  key: MONGO_INITDB_ROOT_USERNAME
             - name: MONGO_INITDB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: tripmonkey-secrets
-                  key: mongo_root_password
+                  key: MONGO_INITDB_ROOT_PASSWORD
             - name: MONGODB_USER
               valueFrom:
                 secretKeyRef:
                   name: tripmonkey-secrets
-                  key: mongo_user
+                  key: MONGODB_USER
             - name: MONGODB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: tripmonkey-secrets
-                  key: mongo_user_password
+                  key: MONGODB_PASSWORD
+          volumeMounts:
+            - name: secrets
+              mountPath: "/etc/secrets"
+              readOnly: true
+      volumes:
+        - name: secrets
+          secret:
+            secretName: tripmonkey-secrets
 ---
 apiVersion: v1
 kind: Service

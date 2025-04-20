@@ -18,27 +18,51 @@ spec:
             - containerPort: 9095
           env:
             - name: GRPC_PORT
-              value: "9095"
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-env
+                  key: GRPC_PORT
             - name: MONGO_HOST
-              value: "mongodb://mongodb:27017"
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-env
+                  key: MONGO_HOST
             - name: MONGO_DATABASE
-              value: workspaces
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-env
+                  key: MONGO_DATABASE
             - name: MONGO_USER
               valueFrom:
                 secretKeyRef:
                   name: tripmonkey-secrets
-                  key: mongo_user
+                  key: MONGO_USER
               value:
             - name: MONGO_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: tripmonkey-secrets
-                  key: mongo_user_password
+                  key: MONGO_PASSWORD
           resources:
             requests:
               memory: "1Gi"
             limits:
               memory: "2Gi"
+          volumeMounts:
+            - name: config
+              mountPath: "/config"
+              readOnly: true
+            - name: secrets
+              mountPath: "/etc/secrets"
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: config
+        - name: secrets
+          secret:
+            secretName: tripmonkey-secrets
+
 ---
 apiVersion: v1
 kind: Service
