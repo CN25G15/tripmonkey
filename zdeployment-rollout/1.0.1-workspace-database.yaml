@@ -35,14 +35,14 @@ spec:
             - name: MONGO_USER
               valueFrom:
                 secretKeyRef:
-                  name: tripmonkey-secrets
-                  key: MONGO_USER
+                  name: workspace-secrets
+                  key: MONGODB_USER
               value:
             - name: MONGO_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: tripmonkey-secrets
-                  key: MONGO_PASSWORD
+                  name: workspace-secrets
+                  key: MONGODB_PASSWORD
           resources:
             requests:
               memory: "1Gi"
@@ -58,10 +58,10 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: config
+            name: workspace-env
         - name: secrets
           secret:
-            secretName: tripmonkey-secrets
+            secretName: workspace-secrets
 
 ---
 apiVersion: v1

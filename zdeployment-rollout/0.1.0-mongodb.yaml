@@ -21,22 +21,22 @@ spec:
             - name: MONGO_INITDB_ROOT_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: tripmonkey-secrets
+                  name: workspace-secrets
                   key: MONGO_INITDB_ROOT_USERNAME
             - name: MONGO_INITDB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: tripmonkey-secrets
+                  name: workspace-secrets
                   key: MONGO_INITDB_ROOT_PASSWORD
             - name: MONGODB_USER
               valueFrom:
                 secretKeyRef:
-                  name: tripmonkey-secrets
+                  name: workspace-secrets
                   key: MONGODB_USER
             - name: MONGODB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: tripmonkey-secrets
+                  name: workspace-secrets
                   key: MONGODB_PASSWORD
           volumeMounts:
             - name: secrets
@@ -45,7 +45,7 @@ spec:
       volumes:
         - name: secrets
           secret:
-            secretName: tripmonkey-secrets
+            secretName: workspace-secrets
 ---
 apiVersion: v1
 kind: Service
