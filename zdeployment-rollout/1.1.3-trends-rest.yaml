@@ -3,12 +3,19 @@ kind: Deployment
 metadata:
   name: trends-rest-interface
 spec:
-  containers:
-    - name: webapp
-      image: sprugit/trends-service
-      ports:
-        - containerPort: 8080
-          targetPort: 8080
+  selector:
+    matchLabels:
+      app: trends-rest-interface
+  template:
+    metadata:
+      labels:
+        app: trends-rest-interface
+    spec:
+      containers:
+        - name: webapp
+          image: sprugit/trends-service
+          ports:
+            - containerPort: 8080
 ---
 apiVersion: v1
 kind: Service

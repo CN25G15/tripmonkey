@@ -3,32 +3,40 @@ kind: Deployment
 metadata:
   name: workspace-service
 spec:
-  containers:
-    - name: webapp
-      image: sprugit/workspace-service
-      ports:
-        - containerPort: 9095
-      env:
-        - name: KAFKA_BOOTSTRAP_SERVERS
-          value: "kafka:9092"
-        - name: GRPC_PORT
-          value: 9095
-        - name: PATCH_PERSIST_HOST
-          value: "database-service:9095"
-        - name: WORKSPACE_FETCH_HOST
-          value: "database-service:9095"
-        - name: GOOGLE_KEY
-          valueFrom:
-            secretKeyRef:
-              name: tripmonkey-secrets
-              key: google_maps_api_key
-        - name: KAFKA_NOTIFICATIONS_TOPIC
-          value: "notifications"
-      resources:
-        requests:
-          memory: "1Gi"
-        limits:
-          memory: "2Gi"
+  selector:
+    matchLabels:
+      app: workspace-service
+  template:
+    metadata:
+      labels:
+         app: workspace-service
+    spec:
+      containers:
+        - name: webapp
+          image: sprugit/workspace-service
+          ports:
+            - containerPort: 9095
+          env:
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: "kafka:9092"
+            - name: GRPC_PORT
+              value: "9095"
+            - name: PATCH_PERSIST_HOST
+              value: "database-service:9095"
+            - name: WORKSPACE_FETCH_HOST
+              value: "database-service:9095"
+            - name: GOOGLE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: tripmonkey-secrets
+                  key: google_maps_api_key
+            - name: KAFKA_NOTIFICATIONS_TOPIC
+              value: "notifications"
+          resources:
+            requests:
+              memory: "1Gi"
+            limits:
+              memory: "2Gi"
 ---
 apiVersion: v1
 kind: Service

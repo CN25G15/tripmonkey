@@ -3,16 +3,20 @@ kind: Deployment
 metadata:
   name: descriptor-service
 spec:
-  containers:
-    - name: webapp
-      image: sprugit/descriptor-service
-      ports:
-        - containerPort: 50051
-          targetPort: 50051
-          port: 50051
-        - containerPort: 5002
-          targetPort: 5002
-          port: 5002
+  selector:
+    matchLabels:
+      app: descriptor-service
+  template:
+    metadata:
+      labels:
+        app: descriptor-service
+    spec:
+      containers:
+        - name: webapp
+          image: sprugit/descriptor-service
+          ports:
+            - containerPort: 50051
+            - containerPort: 5002
 ---
 apiVersion: v1
 kind: Service

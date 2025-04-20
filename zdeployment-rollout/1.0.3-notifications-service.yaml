@@ -3,22 +3,29 @@ kind: Deployment
 metadata:
   name: notifications-service
 spec:
-  containers:
-    - name: notifications
-      image: sprugit/notification-service
-      ports:
-        - containerPort: 8080
-          targetPort: 8080
-      env:
-        - name: SERVICE_PORT
-          value: 8080
-        - name: KAFKA_NOTIFICATIONS_TOPIC
-          value: "notifications"
-      resources:
-        requests:
-          memory: "1Gi"
-        limits:
-          memory: "2Gi"
+  selector:
+    matchLabels:
+      app: notifications-service
+  template:
+    metadata:
+      labels:
+        app: notifications-service
+    spec:
+      containers:
+        - name: notifications
+          image: sprugit/notification-service
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SERVICE_PORT
+              value: "8080"
+            - name: KAFKA_NOTIFICATIONS_TOPIC
+              value: "notifications"
+          resources:
+            requests:
+              memory: "1Gi"
+            limits:
+              memory: "2Gi"
 ---
 apiVersion: v1
 kind: Service
@@ -34,7 +41,7 @@ spec:
       targetPort: 8080
 ---
 apiVersion: autoscaling/v2
-kind: HorizontalDeploymentAutoscaler
+kind: HorizontalPodAutoscaler
 metadata:
   name: notifications-service-hpa
 spec:

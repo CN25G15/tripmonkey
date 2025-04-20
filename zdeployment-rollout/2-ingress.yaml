@@ -7,19 +7,22 @@ spec:
     - host: workspace.local
       http:
         paths:
-          - path: "/notifications/*"
+          - path: "/notifications/"
+            pathType: Prefix
             backend:
               service:
                 name: notifications-service
                 port:
                   number: 80
-          - path: "/workspace/*"
+          - path: "/workspace/"
+            pathType: Prefix
             backend:
               service:
                 name: workspace-rest-interface
                 port:
                   number: 80
-          - path: "/recommend/*"
+          - path: "/recommend/"
+            pathType: Prefix
             backend:
               service:
                 name: recomendations-service

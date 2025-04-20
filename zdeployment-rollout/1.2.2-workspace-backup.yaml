@@ -3,11 +3,19 @@ kind: Deployment
 metadata:
   name: workspace-backup
 spec:
-  containers:
-    - name: backup
-      image: sprugit/workspace_backup
-      ports:
-        - containerPort: 9523
+  selector:
+    matchLabels:
+      app: workspace-backup
+  template:
+    metadata:
+      labels:
+        app: workspace-backup
+    spec:
+      containers:
+        - name: backup
+          image: sprugit/workspace_backup
+          ports:
+            - containerPort: 9523
 ---
 apiVersion: v1
 kind: Service
