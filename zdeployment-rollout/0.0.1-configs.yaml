@@ -11,4 +11,6 @@ data:
   MONGO_DATABASE: "workspaces"
   DB_HOST: "database-service:9095"
   SERVICE_HOST: "workspace-service:9095"
+  SCHEMA_REGISTRY_URL: "registry-service:8081"
+  LOGGER_LEVEL: "TRACE"
 

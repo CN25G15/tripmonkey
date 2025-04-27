@@ -29,6 +29,11 @@ spec:
                 configMapKeyRef:
                   name: workspace-env
                   key: SERVICE_HOST
+            - name: LOGGER_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-env
+                  key: LOGGER_LEVEL
           resources:
             requests:
               memory: "1Gi"
@@ -41,7 +46,7 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: config
+            name: workspace-env
 ---
 apiVersion: v1
 kind: Service
