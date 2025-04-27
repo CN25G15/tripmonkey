@@ -13,3 +13,4 @@ echo "  ______ ______ ______ ______ ______ ______ ______ ______ ______ ______
                                                                         "
 
 kubectl get deployment metrics-server -n kube-system
+kubectl apply -f 'https://strimzi.io/install/latest?namespace=default' -n default

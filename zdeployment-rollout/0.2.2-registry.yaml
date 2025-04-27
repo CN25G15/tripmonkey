@@ -20,11 +20,18 @@ spec:
             - containerPort: 8081
           env:
             - name: SCHEMA_REGISTRY_LISTENERS
-              value: "localhost:8081"
+              value: "http://localhost:8081"
             - name: SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS
-              value: "SSL://kafka:9092"
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-env
+                  key: KAFKA_BOOTSTRAP_SERVERS
             - name: SCHEMA_REGISTRY_HOST_NAME
               value: "localhost"
+      volumes:
+        - name: config
+          configMap:
+            name: workspace-env
 ---
 apiVersion: v1
 kind: Service

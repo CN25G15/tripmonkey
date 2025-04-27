@@ -12,4 +12,4 @@ ECHO "  ______ ______ ___|_| ______ ______ ______ ______ ______|___/__ ______  "
 ECHO " |______|______|______|______|______|______|______|______|______|______| "
 
 kubectl get deployment metrics-server -n kube-system
-
+kubectl apply -f 'https://strimzi.io/install/latest?namespace=default' -n default

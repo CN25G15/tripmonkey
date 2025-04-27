@@ -13,3 +13,4 @@ echo "  ______ ______ ______ ______ ______ ______ ______ ______ ______ ______
                                                                         "
 
 minikube addons enable metrics-server
+kubectl apply -f 'https://strimzi.io/install/latest?namespace=default' -n default

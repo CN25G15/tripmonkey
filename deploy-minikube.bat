@@ -12,3 +12,4 @@ ECHO "  ______ ______ ___|_| ______ ______ ______ ______ ______|___/__ ______  "
 ECHO " |______|______|______|______|______|______|______|______|______|______| "
 
 minikube addons enable metrics-server
+kubectl apply -f 'https://strimzi.io/install/latest?namespace=default' -n default
