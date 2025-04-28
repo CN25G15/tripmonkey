@@ -32,11 +32,21 @@ spec:
                 configMapKeyRef:
                   name: workspace-env
                   key: DB_HOST
+            - name: PATCH_PERSIST_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-env
+                  key: GRPC_PORT
             - name: WORKSPACE_FETCH_HOST
               valueFrom:
                 configMapKeyRef:
                   name: workspace-env
                   key: DB_HOST
+            - name: WORKSPACE_FETCH_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-env
+                  key: GRPC_PORT
             - name: GOOGLE_KEY
               valueFrom:
                 secretKeyRef:
@@ -62,7 +72,7 @@ spec:
                 configMapKeyRef:
                   name: workspace-env
                   key: SCHEMA_REGISTRY_URL
-            - name: LOGGER_LEVEL
+            - name: QUARKUS_LOG_LEVEL
               valueFrom:
                 configMapKeyRef:
                   name: workspace-env

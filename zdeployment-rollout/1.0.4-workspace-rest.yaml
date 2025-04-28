@@ -24,12 +24,22 @@ spec:
                 configMapKeyRef:
                   name: workspace-env
                   key: SERVICE_HOST
+            - name: PATCH_APPLIER_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-env
+                  key: GRPC_PORT
             - name: WORKSPACE_REQUEST_HOST
               valueFrom:
                 configMapKeyRef:
                   name: workspace-env
                   key: SERVICE_HOST
-            - name: LOGGER_LEVEL
+            - name: WORKSPACE_REQUEST_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-env
+                  key: GRPC_PORT
+            - name: QUARKUS_LOG_LEVEL
               valueFrom:
                 configMapKeyRef:
                   name: workspace-env

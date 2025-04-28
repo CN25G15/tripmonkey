@@ -43,7 +43,7 @@ spec:
                 secretKeyRef:
                   name: workspace-secrets
                   key: MONGODB_PASSWORD
-            - name: LOGGER_LEVEL
+            - name: QUARKUS_LOG_LEVEL
               valueFrom:
                 configMapKeyRef:
                   name: workspace-env
