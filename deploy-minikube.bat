@@ -12,4 +12,8 @@ ECHO "  ______ ______ ___|_| ______ ______ ______ ______ ______|___/__ ______  "
 ECHO " |______|______|______|______|______|______|______|______|______|______| "
 
 minikube addons enable metrics-server
+minikube start
 kubectl apply -f 'https://strimzi.io/install/latest?namespace=default' -n default
+kubectl apply -f mongodb-kubernetes-operator/config/crd/bases/mongodbcommunity.mongodb.com_mongodbcommunity.yaml
+kubectl apply -k mongodb-kubernetes-operator/config/rbac/ --namespace default
+kubectl create -f mongodb-kubernetes-operator/config/manager/manager.yaml --namespace default

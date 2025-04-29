@@ -36,13 +36,13 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: workspace-secrets
-                  key: MONGODB_USER
+                  key: MONGO_INITDB_ROOT_USERNAME
               value:
             - name: MONGO_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: workspace-secrets
-                  key: MONGODB_PASSWORD
+                  key: MONGO_INITDB_ROOT_PASSWORD
             - name: QUARKUS_LOG_LEVEL
               valueFrom:
                 configMapKeyRef:

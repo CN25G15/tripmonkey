@@ -38,14 +38,26 @@ spec:
                 secretKeyRef:
                   name: workspace-secrets
                   key: MONGODB_PASSWORD
+            - name: MONGO_INITDB_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-env
+                  key: MONGO_DATABASE
           volumeMounts:
+            - name: config
+              mountPath: "/config"
+              readOnly: true
             - name: secrets
               mountPath: "/etc/secrets"
               readOnly: true
       volumes:
+        - name: config
+          configMap:
+            name: workspace-env
         - name: secrets
           secret:
             secretName: workspace-secrets
+
 ---
 apiVersion: v1
 kind: Service
