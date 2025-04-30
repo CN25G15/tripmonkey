@@ -31,3 +31,6 @@
 [submodule "workspace_backup"]
 	path = workspace_backup
 	url = git@github.com:CN25G15/workspace_backup.git
+[submodule "mongodb-kubernetes-operator"]
+	path = mongodb-kubernetes-operator
+	url = git@github.com:CN25G15/mongodb-kubernetes-operator.git

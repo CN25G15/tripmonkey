@@ -1,71 +1,36 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: mongodb
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: mongodb
-  template:
-    metadata:
-      labels:
-        app: mongodb
-    spec:
-      containers:
-        - name: mongodb
-          image: mongo:latest
-          ports:
-            - containerPort: 27017
-          env:
-            - name: MONGO_INITDB_ROOT_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: workspace-secrets
-                  key: MONGO_INITDB_ROOT_USERNAME
-            - name: MONGO_INITDB_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: workspace-secrets
-                  key: MONGO_INITDB_ROOT_PASSWORD
-            - name: MONGODB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: workspace-secrets
-                  key: MONGODB_USER
-            - name: MONGODB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: workspace-secrets
-                  key: MONGODB_PASSWORD
-            - name: MONGO_INITDB_DATABASE
-              valueFrom:
-                configMapKeyRef:
-                  name: workspace-env
-                  key: MONGO_DATABASE
-          volumeMounts:
-            - name: config
-              mountPath: "/config"
-              readOnly: true
-            - name: secrets
-              mountPath: "/etc/secrets"
-              readOnly: true
-      volumes:
-        - name: config
-          configMap:
-            name: workspace-env
-        - name: secrets
-          secret:
-            secretName: workspace-secrets
-
----
 apiVersion: v1
-kind: Service
+kind: Secret
 metadata:
-  name: mongodb
+  name: workspace-mongo-user-password
+  # corresponds to user.spec.passwordSecretKeyRef.name
+type: Opaque
+stringData:
+  password: V3RYS4F3P4SSW0RD
+---
+apiVersion: mongodbcommunity.mongodb.com/v1
+kind: MongoDBCommunity
+metadata:
+  name: workspace-mongodb
 spec:
-  type: ClusterIP
-  ports:
-    - port: 27017
-  selector:
-    app: mongodb
+  members: 3
+  arbiters: 1
+  type: ReplicaSet
+  version: "6.0.5"
+  security:
+    authentication:
+      modes: ["SCRAM"]
+  users:
+    - name: workspace-mongo-user
+      db: admin
+      passwordSecretRef:
+        name: workspace-mongo-user-password
+      connectionStringSecretNamespace: default
+      connectionStringSecretName: conn-string
+      scramCredentialsSecretName: scramalogic
+      roles:
+        - name: dbOwner
+          db: admin
+        - name: dbOwner
+          db: tripmonkey
+  additionalConnectionStringConfig:
+    readPreference: primary

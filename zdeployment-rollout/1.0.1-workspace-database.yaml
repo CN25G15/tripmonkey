@@ -24,30 +24,32 @@ spec:
                   key: GRPC_PORT
             - name: MONGO_HOST
               valueFrom:
-                configMapKeyRef:
-                  name: workspace-env
-                  key: MONGO_HOST
+                secretKeyRef:
+                  name: conn-string
+                  key: connectionString.standardSrv
             - name: MONGO_DATABASE
               valueFrom:
                 configMapKeyRef:
                   name: workspace-env
                   key: MONGO_DATABASE
-            - name: MONGO_USER
+            - name: QUARKUS_MONGODB_CREDENTIALS_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: workspace-secrets
-                  key: MONGO_INITDB_ROOT_USERNAME
+                  name: conn-string
+                  key: username
               value:
-            - name: MONGO_PASSWORD
+            - name: QUARKUS_MONGODB_CREDENTIALS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: workspace-secrets
-                  key: MONGO_INITDB_ROOT_PASSWORD
+                  name: conn-string
+                  key: password
             - name: QUARKUS_LOG_LEVEL
               valueFrom:
                 configMapKeyRef:
                   name: workspace-env
                   key: LOGGER_LEVEL
+            - name: QUARKUS_MONGODB_CREDENTIALS_AUTH-MECHANISM
+              value: "SCRAM-SHA-256"
           resources:
             requests:
               memory: "1Gi"
