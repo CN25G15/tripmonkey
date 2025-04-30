@@ -39,6 +39,16 @@ spec:
                 configMapKeyRef:
                   name: workspace-env
                   key: GRPC_PORT
+            - name: WORKSPACE_CREATOR_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-env
+                  key: SERVICE_HOST
+            - name: WORKSPACE_CREATOR_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-env
+                  key: GRPC_PORT
             - name: QUARKUS_LOG_LEVEL
               valueFrom:
                 configMapKeyRef:

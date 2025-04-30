@@ -47,6 +47,16 @@ spec:
                 configMapKeyRef:
                   name: workspace-env
                   key: GRPC_PORT
+            - name: CREATE_WORKSPACE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-env
+                  key: DB_HOST
+            - name: CREATE_WORKSPACE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-env
+                  key: GRPC_PORT
             - name: GOOGLE_KEY
               valueFrom:
                 secretKeyRef:
