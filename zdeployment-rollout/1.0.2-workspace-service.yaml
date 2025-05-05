@@ -27,6 +27,7 @@ spec:
                 configMapKeyRef:
                   name: workspace-env
                   key: GRPC_PORT
+
             - name: PATCH_PERSIST_HOST
               valueFrom:
                 configMapKeyRef:
@@ -37,6 +38,7 @@ spec:
                 configMapKeyRef:
                   name: workspace-env
                   key: GRPC_PORT
+
             - name: WORKSPACE_FETCH_HOST
               valueFrom:
                 configMapKeyRef:
@@ -47,6 +49,7 @@ spec:
                 configMapKeyRef:
                   name: workspace-env
                   key: GRPC_PORT
+
             - name: CREATE_WORKSPACE_HOST
               valueFrom:
                 configMapKeyRef:
@@ -57,31 +60,29 @@ spec:
                 configMapKeyRef:
                   name: workspace-env
                   key: GRPC_PORT
-            - name: GOOGLE_KEY
+
+            - name: PERSIST_USER_DATA_HOST
               valueFrom:
-                secretKeyRef:
-                  name: workspace-secrets
-                  key: GOOGLE_KEY
+                configMapKeyRef:
+                  name: workspace-env
+                  key: DB_HOST
+            - name: PERSIST_USER_DATA_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-env
+                  key: GRPC_PORT
+
             - name: KAFKA_NOTIFICATIONS_TOPIC
               valueFrom:
                 configMapKeyRef:
                   name: workspace-env
                   key: KAFKA_NOTIFICATIONS_TOPIC
-            - name: WORKSPACE_FETCH_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: workspace-env
-                  key: DB_HOST
+
             - name: GOOGLE_KEY
               valueFrom:
                 secretKeyRef:
                   name: workspace-secrets
                   key: GOOGLE_KEY
-            - name: SCHEMA_REGISTRY_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: workspace-env
-                  key: SCHEMA_REGISTRY_URL
             - name: QUARKUS_LOG_LEVEL
               valueFrom:
                 configMapKeyRef:
