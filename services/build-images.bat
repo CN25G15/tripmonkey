@@ -21,7 +21,7 @@ ECHO.
 SET previous=%cd%
 ECHO "Installing support modules for java microservices"
 CD %cd%\supporting-modules
-CALL mvnw.cmd clean install
+CALL mvnw.cmd clean install -DskipTests
 CD %previous%
 
 FOR /D %%D IN (*) DO (

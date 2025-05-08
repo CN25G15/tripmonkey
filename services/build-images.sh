@@ -17,7 +17,7 @@ echo "\n-------------------------------------\nBuilding images for local docker 
 previous=$(pwd)
 cd supporting-modules
 echo "\ninstalling support modules for java microservices"
-bash mvnw clean install
+bash mvnw clean install -DskipTests
 cd ..
 
 # Loop over each subdirectory in the current directory

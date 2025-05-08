@@ -21,4 +21,3 @@ spec:
                 name: workspace-rest-interface
                 port:
                   number: 8080
-
