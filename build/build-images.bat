@@ -34,9 +34,6 @@ FOR /D %%D IN (*) DO (
         ECHO.
         echo found build-image.bat @ %%~D
         CALL %cd%\%%~D\build-image.bat
-    ) ELSE (
-        ECHO.
-        ECHO No Dockerfile or build-image.sh found @ %%~D
     )
 )
 

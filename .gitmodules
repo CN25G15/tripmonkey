@@ -1,36 +1,36 @@
 [submodule "workspace-service"]
-	path = services/workspace-service
+	path = build/workspace-service
 	url = git@github.com:CN25G15/workspace-service.git
 [submodule "workspace-rest-service"]
-	path = services/workspace-rest-service
+	path = build/workspace-rest-service
 	url = git@github.com:CN25G15/workspace-rest-service.git
 [submodule "workspace-db-service"]
-	path = services/workspace-db-service
+	path = build/workspace-db-service
 	url = git@github.com:CN25G15/workspace-db-service.git
 [submodule "supporting-modules"]
-	path = services/supporting-modules
+	path = build/supporting-modules
 	url = git@github.com:CN25G15/supporting-modules.git
 [submodule "notification-service"]
-	path = services/notification-service
+	path = build/notification-service
 	url = git@github.com:CN25G15/notification-service.git
 [submodule "keycloak_interface"]
-	path = services/keycloak_interface
+	path = build/keycloak_interface
 	url = git@github.com:CN25G15/keycloak_interface.git
 [submodule "Descriptor-service"]
-	path = services/descriptor-service
+	path = build/descriptor-service
 	url = git@github.com:CN25G15/Descriptor-service.git
 [submodule "Recomendations-service"]
-	path = services/recomendations-service
+	path = build/recomendations-service
 	url = git@github.com:CN25G15/Recomendations-service.git
 [submodule "Trends-service"]
-	path = services/trends-service
+	path = build/trends-service
 	url = git@github.com:CN25G15/Trends-service.git
 [submodule "admin_panel"]
-	path = services/admin_panel
+	path = build/admin_panel
 	url = git@github.com:CN25G15/admin_panel.git
 [submodule "workspace_backup"]
-	path = services/workspace_backup
+	path = build/workspace_backup
 	url = git@github.com:CN25G15/workspace_backup.git
 [submodule "mongodb-kubernetes-operator"]
-	path = services/mongodb-kubernetes-operator
+	path = build/mongodb-kubernetes-operator
 	url = git@github.com:CN25G15/mongodb-kubernetes-operator.git

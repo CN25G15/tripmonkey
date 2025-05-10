@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: workspace-mongo-user-password
+  namespace: tripmonkey-dev
+  # corresponds to user.spec.passwordSecretKeyRef.name
+type: Opaque
+stringData:
+  password: V3RYS4F3P4SSW0RD
+---
+apiVersion: mongodbcommunity.mongodb.com/v1
+kind: MongoDBCommunity
+metadata:
+  name: workspace-mongodb
+  namespace: tripmonkey-dev
+spec:
+  members: 1
+  arbiters: 1
+  type: ReplicaSet
+  version: "6.0.5"
+  security:
+    authentication:
+      modes: ["SCRAM"]
+  users:
+    - name: workspace-mongo-user
+      db: admin
+      passwordSecretRef:
+        name: workspace-mongo-user-password
+      connectionStringSecretNamespace: default
+      connectionStringSecretName: conn-string
+      scramCredentialsSecretName: scramalogic
+      roles:
+        - name: dbOwner
+          db: admin
+        - name: dbOwner
+          db: tripmonkey
+  additionalConnectionStringConfig:
+    readPreference: primary

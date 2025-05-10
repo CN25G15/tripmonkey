@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+      - http:
+          paths:
+          - path: /notifications
+            pathType: Prefix
+            backend:
+              service:
+                name: notifications-service
+                port:
+                  number: 8080
+          - path: /workspace
+            pathType: Prefix
+            backend:
+              service:
+                name: workspace-rest-interface
+                port:
+                  number: 8080

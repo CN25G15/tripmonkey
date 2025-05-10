@@ -34,9 +34,6 @@ for dir in */; do
       # If it exists and is executable, run the script
 	  echo "\nfound build-image.sh @ ${dir}"
 	  bash "${dir}build-image.sh"
-    else
-      # If neither a Dockerfile nor "build-image.sh" exist in this directory, skip it
-      echo "\nNo Dockerfile or build-image.sh found @ ${dir}"
     fi
   fi
 done

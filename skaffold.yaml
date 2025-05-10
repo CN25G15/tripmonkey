@@ -1,0 +1,161 @@
+apiVersion: skaffold/v4beta13
+kind: Config
+metadata:
+  name: tripmonkey
+
+profiles:
+
+  - name: development
+    activation:
+      - command: dev
+
+    #deploy:
+    # kubectl:
+    manifests:
+      rawYaml:
+        - k8s/environments/0.development/*
+
+
+    portForward:
+      - resourceType: Service
+        resourceName: ingress-nginx-controller
+        namespace: tripmonkey-dev
+        port: 80
+        localPort: 81
+      - resourceType: Service
+        resourceName: debug-mongo-express-service
+        namespace: tripmonkey-dev
+        port: 2345
+        localPort: 82
+
+    build:
+      local:
+        push: false
+      artifacts:
+        # python services
+        - image: admin-panel
+          context: build/admin_panel
+          docker:
+            dockerfile: Dockerfile
+          sync:
+            manual:
+              - src: '*.py'
+                dest: /app
+
+        - image: descriptor-service
+          context: build/descriptor-service
+          docker:
+            dockerfile: Dockerfile
+          sync:
+            manual:
+              - src: '*.py'
+                dest: /app
+
+        - image: keycloak-interface
+          context: build/keycloak_interface
+          docker:
+            dockerfile: Dockerfile
+          sync:
+            manual:
+              - src: '*.py'
+                dest: /app
+              - src: '*.json'
+                dest: /app
+
+        - image: recomendations-service
+          context: build/recomendations-service
+          docker:
+            dockerfile: Dockerfile
+          sync:
+            manual:
+              - src: '*.py'
+                dest: /app
+
+        - image: trends-service
+          context: build/trends-service
+          docker:
+            dockerfile: Dockerfile
+          sync:
+            manual:
+              - src: '*.py'
+                dest: /app
+
+        - image: workspace_backup
+          context: build/workspace_backup
+          docker:
+            dockerfile: build/workspace_backup/Dockerfile
+          sync:
+            manual:
+              - src: '*.py'
+                dest: /app
+              - src: '*.json'
+                dest: /app
+
+        # java services
+
+        - image: notification-service
+          context: build/notification-service
+          docker:
+            dockerfile: src/main/docker/Dockerfile.jvm
+          sync:
+            manual:
+              - src: 'target/quarkus-app/lib/'
+                dest: /deployments/lib/
+              - src: 'target/quarkus-app/*.jar'
+                dest: /deployments/
+              - src: 'target/quarkus-app/app/'
+                dest: /deployments/app/
+              - src: 'target/quarkus-app/quarkus/'
+                dest: /deployments/quarkus/
+
+        - image: workspace-service
+          context: build/workspace-service
+          docker:
+            dockerfile: src/main/docker/Dockerfile.jvm
+          sync:
+            manual:
+              - src: 'target/quarkus-app/lib/'
+                dest: /deployments/lib/
+              - src: 'target/quarkus-app/*.jar'
+                dest: /deployments/
+              - src: 'target/quarkus-app/app/'
+                dest: /deployments/app/
+              - src: 'target/quarkus-app/quarkus/'
+                dest: /deployments/quarkus/
+
+        - image: database-service
+          context: build/workspace-db-service
+          docker:
+            dockerfile: src/main/docker/Dockerfile.jvm
+          sync:
+            manual:
+              - src: 'target/quarkus-app/lib/'
+                dest: /deployments/lib/
+              - src: 'target/quarkus-app/*.jar'
+                dest: /deployments/
+              - src: 'target/quarkus-app/app/'
+                dest: /deployments/app/
+              - src: 'target/quarkus-app/quarkus/'
+                dest: /deployments/quarkus/
+
+        - image: workspace-rest
+          context: build/workspace-rest-service
+          docker:
+            dockerfile: src/main/docker/Dockerfile.jvm
+          sync:
+            manual:
+              - src: 'target/quarkus-app/lib/'
+                dest: /deployments/lib/
+              - src: 'target/quarkus-app/*.jar'
+                dest: /deployments/
+              - src: 'target/quarkus-app/app/'
+                dest: /deployments/app/
+              - src: 'target/quarkus-app/quarkus/'
+                dest: /deployments/quarkus/
+
+
+
+  - name: test
+
+  - name: prod
+
