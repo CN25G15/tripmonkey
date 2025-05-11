@@ -9,12 +9,22 @@ profiles:
     activation:
       - command: dev
 
-    #deploy:
-    # kubectl:
+    deploy:
+      kubectl:
+        remoteManifests:
+          - https://strimzi.io/install/latest?namespace=tripmonkey-dev
+        flags:
+          apply:
+            - "--namespace tripmonkey-dev"
+
     manifests:
       rawYaml:
-        - k8s/environments/0.development/*
-
+        - build/mongodb-kubernetes-operator/config/crd/bases/mongodbcommunity.mongodb.com_mongodbcommunity.yaml
+        - build/mongodb-kubernetes-operator/config/rbac/
+        - build/mongodb-kubernetes-operator/config/manager/manager.yaml
+        - k8s/environments/0.development/2.resources/2.deployments
+        - k8s/environments/0.development/2.resources/3.ingress
+        - k8s/environments/0.development/2.resources/4.scalability
 
     portForward:
       - resourceType: Service

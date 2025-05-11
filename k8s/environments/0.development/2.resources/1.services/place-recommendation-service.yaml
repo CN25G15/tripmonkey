@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: place-recommendation-service
+  namespace: tripmonkey-dev
+spec:
+  type: ClusterIP
+  selector:
+    app: recomendations-service
+  ports:
+    - name: recomendations-service
+      port: 50051
+      targetPort: 50051
+    - name: port-5
+      port: 5002
+      targetPort: 5002
