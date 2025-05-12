@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: debug-mongo-express
+spec:
+  selector:
+    matchLabels:
+      app: debug-mongo-express
+  template:
+    metadata:
+      labels:
+        app: debug-mongo-express
+    spec:
+      containers:
+        - name: debug-mongo-express
+          image: mongo-express
+          ports:
+            - containerPort: 8081
+          env:
+            - name: ME_CONFIG_MONGODB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: high-conn-string
+                  key: connectionString.standard
+            - name: MONGO_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: MONGO_DATABASE
+            - name: ME_CONFIG_BASICAUTH_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: conn-string
+                  key: username
+              value:
+            - name: ME_CONFIG_BASICAUTH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: conn-string
+                  key: password
+            - name: ME_CONFIG_MONGODB_ADMINUSERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: high-conn-string
+                  key: username
+              value:
+            - name: ME_CONFIG_MONGODB_ADMINPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: high-conn-string
+                  key: password
+            - name: ME_CONFIG_BASICAUTH
+              value: "false"
+          volumeMounts:
+            - name: config
+              mountPath: "/config"
+              readOnly: true
+            - name: secrets
+              mountPath: "/etc/secrets"
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: workspace-dev-env
+        - name: secrets
+          secret:
+            secretName: workspace-secrets

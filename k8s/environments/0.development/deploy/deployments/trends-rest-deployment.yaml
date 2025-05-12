@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trends-rest-interface
+  
+spec:
+  selector:
+    matchLabels:
+      app: trends-rest-interface
+  template:
+    metadata:
+      labels:
+        app: trends-rest-interface
+    spec:
+      containers:
+        - name: webapp
+          image: trends-service-image
+          ports:
+            - containerPort: 8080

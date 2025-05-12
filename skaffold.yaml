@@ -9,59 +9,45 @@ profiles:
     activation:
       - command: dev
 
-    deploy:
-      kubectl:
-        remoteManifests:
-          - https://strimzi.io/install/latest?namespace=tripmonkey-dev
-        flags:
-          apply:
-            - "--namespace tripmonkey-dev"
-
     manifests:
       rawYaml:
-        - build/mongodb-kubernetes-operator/config/crd/bases/mongodbcommunity.mongodb.com_mongodbcommunity.yaml
-        - build/mongodb-kubernetes-operator/config/rbac/
-        - build/mongodb-kubernetes-operator/config/manager/manager.yaml
-        - k8s/environments/0.development/2.resources/2.deployments
-        - k8s/environments/0.development/2.resources/3.ingress
-        - k8s/environments/0.development/2.resources/4.scalability
-
+        - k8s/environments/0.development/deploy/*
     portForward:
       - resourceType: Service
         resourceName: ingress-nginx-controller
-        namespace: tripmonkey-dev
+        namespace: default
         port: 80
-        localPort: 81
+        localPort: 80
       - resourceType: Service
         resourceName: debug-mongo-express-service
-        namespace: tripmonkey-dev
-        port: 2345
-        localPort: 82
+        namespace: default
+        port: 8081
+        localPort: 81
 
     build:
       local:
         push: false
       artifacts:
         # python services
-        - image: admin-panel
+        - image: admin-panel-image
           context: build/admin_panel
           docker:
             dockerfile: Dockerfile
           sync:
             manual:
               - src: '*.py'
-                dest: /app
+                dest: /app/
 
-        - image: descriptor-service
+        - image: descriptor-service-image
           context: build/descriptor-service
           docker:
             dockerfile: Dockerfile
           sync:
             manual:
               - src: '*.py'
-                dest: /app
+                dest: /app/
 
-        - image: keycloak-interface
+        - image: keycloak-interface-image
           context: build/keycloak_interface
           docker:
             dockerfile: Dockerfile
@@ -70,40 +56,40 @@ profiles:
               - src: '*.py'
                 dest: /app
               - src: '*.json'
-                dest: /app
+                dest: /app/
 
-        - image: recomendations-service
+        - image: recommendations-service-image
           context: build/recomendations-service
           docker:
             dockerfile: Dockerfile
           sync:
             manual:
               - src: '*.py'
-                dest: /app
+                dest: /app/
 
-        - image: trends-service
+        - image: trends-service-image
           context: build/trends-service
           docker:
             dockerfile: Dockerfile
           sync:
             manual:
               - src: '*.py'
-                dest: /app
+                dest: /app/
 
-        - image: workspace_backup
+        - image: workspace-backup-image
           context: build/workspace_backup
           docker:
-            dockerfile: build/workspace_backup/Dockerfile
+            dockerfile: Dockerfile
           sync:
             manual:
               - src: '*.py'
                 dest: /app
               - src: '*.json'
-                dest: /app
+                dest: /app/
 
         # java services
 
-        - image: notification-service
+        - image: notification-service-image
           context: build/notification-service
           docker:
             dockerfile: src/main/docker/Dockerfile.jvm
@@ -118,7 +104,7 @@ profiles:
               - src: 'target/quarkus-app/quarkus/'
                 dest: /deployments/quarkus/
 
-        - image: workspace-service
+        - image: workspace-service-image
           context: build/workspace-service
           docker:
             dockerfile: src/main/docker/Dockerfile.jvm
@@ -133,7 +119,7 @@ profiles:
               - src: 'target/quarkus-app/quarkus/'
                 dest: /deployments/quarkus/
 
-        - image: database-service
+        - image: database-service-image
           context: build/workspace-db-service
           docker:
             dockerfile: src/main/docker/Dockerfile.jvm
@@ -148,7 +134,7 @@ profiles:
               - src: 'target/quarkus-app/quarkus/'
                 dest: /deployments/quarkus/
 
-        - image: workspace-rest
+        - image: workspace-rest-image
           context: build/workspace-rest-service
           docker:
             dockerfile: src/main/docker/Dockerfile.jvm

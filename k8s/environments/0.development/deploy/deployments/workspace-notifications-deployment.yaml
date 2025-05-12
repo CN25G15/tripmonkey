@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notifications-service
+  
+spec:
+  selector:
+    matchLabels:
+      app: notifications-service
+  template:
+    metadata:
+      labels:
+        app: notifications-service
+    spec:
+      containers:
+        - name: notifications
+          image: notification-service-image
+          ports:
+            - containerPort: 8080
+          env:
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: KAFKA_BOOTSTRAP_SERVERS
+            - name: SERVICE_PORT
+              value: "8080"
+            - name: KAFKA_NOTIFICATIONS_TOPIC
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: KAFKA_NOTIFICATIONS_TOPIC
+
+            - name: QUARKUS_LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: LOGGER_LEVEL
+          resources:
+            requests:
+              memory: "1Gi"
+            limits:
+              memory: "2Gi"
+          volumeMounts:
+            - name: config
+              mountPath: "/config"
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: workspace-dev-env
