@@ -5,7 +5,7 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app: notifications-service
+    app: workspace-notifications-app
   ports:
     - name: notifications-port
       port: 8080

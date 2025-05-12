@@ -6,14 +6,14 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: database-service
+      app: workspace-database-app
   template:
     metadata:
       labels:
-        app: database-service
+        app: workspace-database-app
     spec:
       containers:
-        - name: database-service
+        - name: workspace-database-app
           image: database-service-image
           ports:
             - containerPort: 9095
@@ -22,10 +22,12 @@ spec:
             httpGet:
               path: /q/health/ready
               port: 8080
+            initialDelaySeconds: 90
           livenessProbe:
             httpGet:
               path: /q/health/live
               port: 8080
+            initialDelaySeconds: 90
           env:
             - name: GRPC_PORT
               valueFrom:

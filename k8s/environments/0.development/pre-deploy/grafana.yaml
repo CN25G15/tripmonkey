@@ -25,19 +25,19 @@ spec:
               value: ""
             - name: GF_SECURITY_CSRF_TRUSTED_ORIGINS
               value: "<DOMAIN-USED-TO-ACCESS-GRAFANA>"
-      volumeMounts:
-        - mountPath: /var/lib/grafana
-          name: grafana-storage
-        - mountPath: /etc/grafana/provisioning/datasources
-          name: grafana-datasources
-          readOnly: false
-    volumes:
-      - name: grafana-storage
-        emptyDir: {}
-      - name: grafana-datasources
-        configMap:
-          defaultMode: 420
-          name: grafana-datasources
+          volumeMounts:
+            - mountPath: /var/lib/grafana
+              name: grafana-storage
+            - mountPath: /etc/grafana/provisioning/datasources
+              name: grafana-datasources
+              readOnly: false
+      volumes:
+        - name: grafana-storage
+          emptyDir: {}
+        - name: grafana-datasources
+          configMap:
+            defaultMode: 420
+            name: grafana-datasources
 ---
 kind: Service
 apiVersion: v1

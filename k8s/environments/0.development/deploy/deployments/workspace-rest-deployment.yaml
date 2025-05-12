@@ -2,18 +2,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: workspace-rest-deployment
-  
 spec:
   selector:
     matchLabels:
-      app: workspace-rest-interface
+      app: workspace-rest-app
   template:
     metadata:
       labels:
-        app: workspace-rest-interface
+        app: workspace-rest-app
     spec:
       containers:
-        - name: workspace-rest
+        - name: workspace-rest-app
           image: workspace-rest-image
           ports:
             - containerPort: 8080
@@ -21,10 +20,12 @@ spec:
             httpGet:
               path: /q/health/ready
               port: 8080
+            initialDelaySeconds: 90
           livenessProbe:
             httpGet:
               path: /q/health/live
               port: 8080
+            initialDelaySeconds: 90
           env:
             - name: SERVICE_PORT
               value: "8080"

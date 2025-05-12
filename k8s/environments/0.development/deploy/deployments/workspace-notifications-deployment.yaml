@@ -2,18 +2,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: workspace-notifications-deployment
-  
 spec:
   selector:
     matchLabels:
-      app: notifications-service
+      app: workspace-notifications-app
   template:
     metadata:
       labels:
-        app: notifications-service
+        app: workspace-notifications-app
     spec:
       containers:
-        - name: notifications
+        - name: workspace-notifications-app
           image: notification-service-image
           ports:
             - containerPort: 8080
@@ -21,10 +20,12 @@ spec:
             httpGet:
               path: /q/health/ready
               port: 8080
+            initialDelaySeconds: 90
           livenessProbe:
             httpGet:
               path: /q/health/live
               port: 8080
+            initialDelaySeconds: 90
           env:
             - name: KAFKA_BOOTSTRAP_SERVERS
               valueFrom:

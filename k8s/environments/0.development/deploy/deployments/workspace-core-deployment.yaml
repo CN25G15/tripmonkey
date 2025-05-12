@@ -2,18 +2,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: workspace-core-deployment
-  
 spec:
   selector:
     matchLabels:
-      app: workspace-service
+      app: workspace-core-app
   template:
     metadata:
       labels:
-         app: workspace-service
+         app: workspace-core-app
     spec:
       containers:
-        - name: webapp
+        - name: workspace-core-app
           image: workspace-service-image
           ports:
             - containerPort: 9095
@@ -22,10 +21,12 @@ spec:
             httpGet:
               path: /q/health/ready
               port: 8080
+            initialDelaySeconds: 90
           livenessProbe:
             httpGet:
               path: /q/health/live
               port: 8080
+            initialDelaySeconds: 90
           env:
             - name: KAFKA_BOOTSTRAP_SERVERS
               valueFrom:

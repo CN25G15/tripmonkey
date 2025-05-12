@@ -5,7 +5,7 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app: workspace-service
+    app: workspace-core-app
   ports:
     - name: grpc
       port: 9095
