@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: workspace-rest-interface
+  name: workspace-rest-deployment
   
 spec:
   selector:
@@ -17,6 +17,14 @@ spec:
           image: workspace-rest-image
           ports:
             - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /q/health/ready
+              port: 8080
+          livenessProbe:
+            httpGet:
+              path: /q/health/live
+              port: 8080
           env:
             - name: SERVICE_PORT
               value: "8080"
@@ -59,7 +67,7 @@ spec:
             requests:
               memory: "1Gi"
             limits:
-              memory: "2Gi"
+              memory: "1Gi"
           volumeMounts:
             - name: config
               mountPath: "/config"

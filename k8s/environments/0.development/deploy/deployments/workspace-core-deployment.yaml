@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: workspace-service
+  name: workspace-core-deployment
   
 spec:
   selector:
@@ -17,6 +17,15 @@ spec:
           image: workspace-service-image
           ports:
             - containerPort: 9095
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /q/health/ready
+              port: 8080
+          livenessProbe:
+            httpGet:
+              path: /q/health/live
+              port: 8080
           env:
             - name: KAFKA_BOOTSTRAP_SERVERS
               valueFrom:
@@ -93,7 +102,7 @@ spec:
             requests:
               memory: "1Gi"
             limits:
-              memory: "2Gi"
+              memory: "1Gi"
           volumeMounts:
             - name: config
               mountPath: "/config"
@@ -101,6 +110,7 @@ spec:
             - name: secrets
               mountPath: "/etc/secrets"
               readOnly: true
+
       volumes:
         - name: config
           configMap:
