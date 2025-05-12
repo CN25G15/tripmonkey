@@ -23,6 +23,11 @@ profiles:
         namespace: default
         port: 8081
         localPort: 81
+      - resourceType: Service
+        resourceName: grafana-svc
+        namespace: default
+        port: 8081
+        localPort: 83
 
     build:
       local:

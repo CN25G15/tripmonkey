@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prom
+  namespace: default
+data:
+  prometheus-cm.yaml: |-
+    scrape_configs:
+      - job_name: prometheus
+        scrape_interval: 5s
+        static_configs:
+          - targets: ['localhost:9090']
+
+      - job_name: workspace-rest
+        scrape_interval: 5s
+        static_configs:
+          - targets: [ 'workspace-rest-service:8080' ]
+
+      - job_name: workspace-core
+        scrape_interval: 5s
+        static_configs:
+          - targets: [ 'workspace-core-service:8080' ]
+
+      - job_name: workspace-database
+        scrape_interval: 5s
+        static_configs:
+          - targets: [ 'workspace-database-service:8080' ]
+
+      - job_name: workspace-notifications
+        scrape_interval: 5s
+        static_configs:
+          - targets: [ 'workspace-notifications-service:8080' ]
