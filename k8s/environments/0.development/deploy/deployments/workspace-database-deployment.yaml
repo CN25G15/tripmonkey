@@ -55,6 +55,8 @@ spec:
                 secretKeyRef:
                   name: conn-string
                   key: password
+
+            # Java env vars
             - name: QUARKUS_LOG_LEVEL
               valueFrom:
                 configMapKeyRef:
@@ -62,6 +64,13 @@ spec:
                   key: LOGGER_LEVEL
             - name: QUARKUS_MONGODB_CREDENTIALS_AUTH-MECHANISM
               value: "SCRAM-SHA-256"
+            - name: JAVA_DEBUG
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: JAVA_DEBUG
+
+
           resources:
             requests:
               memory: "1Gi"

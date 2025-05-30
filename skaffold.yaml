@@ -26,8 +26,30 @@ profiles:
       - resourceType: Service
         resourceName: grafana-svc
         namespace: default
-        port: 8081
+        port: 3000
         localPort: 83
+
+      # Debug port forwarding for java services
+      - resourceType: Service
+        resourceName: workspace-core-service
+        namespace: default
+        port: 5005
+        localPort: 5051
+      - resourceType: Service
+        resourceName: workspace-database-service
+        namespace: default
+        port: 5005
+        localPort: 5052
+      - resourceType: Service
+        resourceName: workspace-notifications-service
+        namespace: default
+        port: 5005
+        localPort: 5053
+      - resourceType: Service
+        resourceName: workspace-rest-service
+        namespace: default
+        port: 5005
+        localPort: 5054
 
     build:
       local:

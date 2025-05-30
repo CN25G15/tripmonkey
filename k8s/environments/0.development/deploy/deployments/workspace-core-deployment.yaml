@@ -77,6 +77,7 @@ spec:
                 configMapKeyRef:
                   name: workspace-dev-env
                   key: DB_HOST
+
             - name: PERSIST_USER_DATA_PORT
               valueFrom:
                 configMapKeyRef:
@@ -94,11 +95,19 @@ spec:
                 secretKeyRef:
                   name: workspace-secrets
                   key: GOOGLE_KEY
+
+            # Java env vars
             - name: QUARKUS_LOG_LEVEL
               valueFrom:
                 configMapKeyRef:
                   name: workspace-dev-env
                   key: LOGGER_LEVEL
+            - name: JAVA_DEBUG
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: JAVA_DEBUG
+
           resources:
             requests:
               memory: "1Gi"

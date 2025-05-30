@@ -16,5 +16,6 @@ data:
   MONGO_DATABASE: "workspaces"
   DB_HOST: "workspace-database-service"
   SERVICE_HOST: "workspace-core-service"
-  LOGGER_LEVEL: "TRACE"
+  LOGGER_LEVEL: "INFO"
+  JAVA_DEBUG: "true"
 

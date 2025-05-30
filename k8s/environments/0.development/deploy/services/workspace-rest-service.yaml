@@ -10,3 +10,6 @@ spec:
     - name: rest-port
       port: 8080
       targetPort: 8080
+    - name: java-debug-port
+      port: 5005
+      targetPort: 5005
