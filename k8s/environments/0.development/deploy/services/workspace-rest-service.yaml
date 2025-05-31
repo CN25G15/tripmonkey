@@ -13,3 +13,6 @@ spec:
     - name: java-debug-port
       port: 5005
       targetPort: 5005
+    - name: prometheus-port
+      port: 9000
+      targetPort: 9000
