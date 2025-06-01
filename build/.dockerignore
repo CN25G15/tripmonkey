@@ -1,0 +1,11 @@
+# Ignore everything by default
+*
+
+# White list the directories necessary
+!notification-service/
+!supporting-modules/
+!workspace-db-service/
+!workspace-rest-service/
+!workspace-service/
+!.dockerignore
+!Dockerfile*

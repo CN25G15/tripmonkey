@@ -11,7 +11,15 @@ profiles:
 
     manifests:
       rawYaml:
-        - k8s/environments/0.development/deploy/*
+        - k8s/environments/0.development/deploy/deployments/jvm/*
+        - k8s/environments/0.development/deploy/deployments/py/*
+        - k8s/environments/0.development/deploy/deployments/misc/*
+        - k8s/environments/0.development/deploy/scalability/*
+        - k8s/environments/0.development/deploy/services/jvm/*
+        - k8s/environments/0.development/deploy/services/py/*
+        - k8s/environments/0.development/deploy/services/misc/*
+        - k8s/environments/0.development/deploy/tripmonkey-ingress-conf.yaml
+
     portForward:
       - resourceType: Service
         resourceName: ingress-nginx-controller
@@ -176,7 +184,121 @@ profiles:
               - src: 'target/quarkus-app/quarkus/'
                 dest: /deployments/quarkus/
 
+# Environment for developing and testing the python microservices (abstract away from java)
+  - name: py-dev
+    activation:
+      - command: dev
+        # skaffold dev --profile py-dev
+    manifests:
+      rawYaml:
+        - k8s/environments/0.development/deploy/deployments/jvm-multi/*
+        - k8s/environments/0.development/deploy/deployments/py/*
+        - k8s/environments/0.development/deploy/deployments/misc/*
+        - k8s/environments/0.development/deploy/scalability/*
+        - k8s/environments/0.development/deploy/services/jvm/*
+        - k8s/environments/0.development/deploy/services/py/*
+        - k8s/environments/0.development/deploy/services/misc/*
+        - k8s/environments/0.development/deploy/tripmonkey-ingress-conf.yaml
 
+    portForward:
+      - resourceType: Service
+        resourceName: ingress-nginx-controller
+        namespace: default
+        port: 80
+        localPort: 80
+      - resourceType: Service
+        resourceName: debug-mongo-express-service
+        namespace: default
+        port: 8081
+        localPort: 81
+      - resourceType: Service
+        resourceName: grafana-svc
+        namespace: default
+        port: 3000
+        localPort: 83
+
+    build:
+      local:
+        push: false
+      artifacts:
+        # python services
+        - image: admin-panel-image
+          context: build/admin_panel
+          docker:
+            dockerfile: Dockerfile
+          sync:
+            manual:
+              - src: '*.py'
+                dest: /app/
+
+        - image: descriptor-service-image
+          context: build/descriptor-service
+          docker:
+            dockerfile: Dockerfile
+          sync:
+            manual:
+              - src: '*.py'
+                dest: /app/
+
+        - image: keycloak-interface-image
+          context: build/keycloak_interface
+          docker:
+            dockerfile: Dockerfile
+          sync:
+            manual:
+              - src: '*.py'
+                dest: /app
+              - src: '*.json'
+                dest: /app/
+
+        - image: recommendations-service-image
+          context: build/recomendations-service
+          docker:
+            dockerfile: Dockerfile
+          sync:
+            manual:
+              - src: '*.py'
+                dest: /app/
+
+        - image: trends-service-image
+          context: build/trends-service
+          docker:
+            dockerfile: Dockerfile
+          sync:
+            manual:
+              - src: '*.py'
+                dest: /app/
+        - image: workspace-backup-image
+          context: build/workspace_backup
+          docker:
+            dockerfile: Dockerfile
+          sync:
+            manual:
+              - src: '*.py'
+                dest: /app
+              - src: '*.json'
+                dest: /app/
+        # java services
+
+        - image: notification-service-image-multi
+          context: build/notification-service #docker build context
+          docker:
+            dockerfile: src/main/docker/Dockerfile.multistage-jvm
+
+        - image: workspace-service-image-multi
+          context: build/workspace-service
+          docker:
+            dockerfile: src/main/docker/Dockerfile.multistage-jvm
+
+        - image: database-service-image-multi
+          context: build/workspace-db-service
+          docker:
+            dockerfile: src/main/docker/Dockerfile.multistage-jvm
+
+        - image: workspace-rest-image-multi
+          context: build/workspace-rest-service
+          docker:
+            dockerfile: src/main/docker/Dockerfile.multistage-jvm
 
   - name: test
 

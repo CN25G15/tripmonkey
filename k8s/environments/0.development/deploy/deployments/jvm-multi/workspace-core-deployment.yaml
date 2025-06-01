@@ -1,0 +1,130 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workspace-core-deployment
+spec:
+  selector:
+    matchLabels:
+      app: workspace-core-app
+  template:
+    metadata:
+      labels:
+         app: workspace-core-app
+    spec:
+      containers:
+        - name: workspace-core-app
+          image: workspace-service-image-multi
+          ports:
+            - containerPort: 9095
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /q/health/ready
+              port: 8080
+            initialDelaySeconds: 90
+          livenessProbe:
+            httpGet:
+              path: /q/health/live
+              port: 8080
+            initialDelaySeconds: 90
+          env:
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: KAFKA_BOOTSTRAP_SERVERS
+            - name: GRPC_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: GRPC_PORT
+
+            - name: PATCH_PERSIST_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: DB_HOST
+            - name: PATCH_PERSIST_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: GRPC_PORT
+
+            - name: WORKSPACE_FETCH_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: DB_HOST
+            - name: WORKSPACE_FETCH_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: GRPC_PORT
+
+            - name: CREATE_WORKSPACE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: DB_HOST
+            - name: CREATE_WORKSPACE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: GRPC_PORT
+
+            - name: PERSIST_USER_DATA_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: DB_HOST
+
+            - name: PERSIST_USER_DATA_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: GRPC_PORT
+
+            - name: KAFKA_NOTIFICATIONS_TOPIC
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: KAFKA_NOTIFICATIONS_TOPIC
+
+            - name: GOOGLE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: workspace-secrets
+                  key: GOOGLE_KEY
+
+            # Java env vars
+            - name: QUARKUS_LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: LOGGER_LEVEL
+            - name: JAVA_DEBUG
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: JAVA_DEBUG
+
+          resources:
+            requests:
+              memory: "1Gi"
+            limits:
+              memory: "1Gi"
+          volumeMounts:
+            - name: config
+              mountPath: "/config"
+              readOnly: true
+            - name: secrets
+              mountPath: "/etc/secrets"
+              readOnly: true
+
+      volumes:
+        - name: config
+          configMap:
+            name: workspace-dev-env
+        - name: secrets
+          secret:
+            secretName: workspace-secrets

@@ -1,0 +1,24 @@
+FROM quay.io/quarkus/ubi9-quarkus-mandrel-builder-image:jdk-21 AS build
+LABEL authors="Spruce"
+
+# installing dependencies
+
+#RUN ./supporting-modules/mvnw install
+#RUN ./
+
+
+#COPY --chown=quarkus:quarkus --chmod=0755 mvnw /code/mvnw
+#COPY --chown=quarkus:quarkus .mvn /code/.mvn
+#COPY --chown=quarkus:quarkus pom.xml /code/
+#USER quarkus
+#WORKDIR /code
+#RUN ./mvnw -B org.apache.maven.plugins:maven-dependency-plugin:3.8.1:go-offline
+#COPY src /code/src
+#RUN ./mvnw package -Dnative
+
+
+
+#ENTRYPOINT ["top", "-b"]
+
+
+# This file was an attempt to make builder image import the local maven repo but this was dropped in favor of hosting a maven nexus on gcloud
