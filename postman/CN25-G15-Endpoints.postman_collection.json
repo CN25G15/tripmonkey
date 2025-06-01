@@ -1,0 +1,452 @@
+{
+	"info": {
+		"_postman_id": "b1a1bc62-1f36-4e25-b678-8448d301ae43",
+		"name": "CN25-G15-Endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43542493"
+	},
+	"item": [
+		{
+			"name": "Google Places",
+			"item": [
+				{
+					"name": "Places (old) Api - specific fields",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?fields=place_id%2Cformatted_address%2Cname%2Crating%2Copening_hours%2Cgeometry&input=Museum%20of%20Contemporary%20Art%20Australia&inputtype=textquery&key=AIzaSyDfslCfzFfgGVfkNoMrSKbz6XiQdOZDTWc",
+							"protocol": "https",
+							"host": [
+								"maps",
+								"googleapis",
+								"com"
+							],
+							"path": [
+								"maps",
+								"api",
+								"place",
+								"findplacefromtext",
+								"json"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "place_id%2Cformatted_address%2Cname%2Crating%2Copening_hours%2Cgeometry"
+								},
+								{
+									"key": "input",
+									"value": "Museum%20of%20Contemporary%20Art%20Australia"
+								},
+								{
+									"key": "inputtype",
+									"value": "textquery"
+								},
+								{
+									"key": "key",
+									"value": "AIzaSyDfslCfzFfgGVfkNoMrSKbz6XiQdOZDTWc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Places (old) Api - all fields",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?fields=all&input=Museum%20of%20Contemporary%20Art%20Australia&inputtype=textquery&key=AIzaSyAksjU2WjNiygK_KwFoNmTZBUbDP6fk2mo",
+							"protocol": "https",
+							"host": [
+								"maps",
+								"googleapis",
+								"com"
+							],
+							"path": [
+								"maps",
+								"api",
+								"place",
+								"findplacefromtext",
+								"json"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "all"
+								},
+								{
+									"key": "input",
+									"value": "Museum%20of%20Contemporary%20Art%20Australia"
+								},
+								{
+									"key": "inputtype",
+									"value": "textquery"
+								},
+								{
+									"key": "key",
+									"value": "AIzaSyAksjU2WjNiygK_KwFoNmTZBUbDP6fk2mo"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Places (old) Api - Get Place Id",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?fields=place_id&input=Museum%20of%20Contemporary%20Art%20Australia&inputtype=textquery&key=AIzaSyDfslCfzFfgGVfkNoMrSKbz6XiQdOZDTWc",
+							"protocol": "https",
+							"host": [
+								"maps",
+								"googleapis",
+								"com"
+							],
+							"path": [
+								"maps",
+								"api",
+								"place",
+								"findplacefromtext",
+								"json"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "place_id"
+								},
+								{
+									"key": "input",
+									"value": "Museum%20of%20Contemporary%20Art%20Australia"
+								},
+								{
+									"key": "inputtype",
+									"value": "textquery"
+								},
+								{
+									"key": "key",
+									"value": "AIzaSyDfslCfzFfgGVfkNoMrSKbz6XiQdOZDTWc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Places (old) Api - Get UD fields",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://maps.googleapis.com/maps/api/place/details/json?fields=place_id%2Cname%2Ctype%2Cgeometry%2Crating&place_id=ChIJ68aBlEKuEmsRHUA9oME5Zh0&key=AIzaSyDfslCfzFfgGVfkNoMrSKbz6XiQdOZDTWc",
+							"protocol": "https",
+							"host": [
+								"maps",
+								"googleapis",
+								"com"
+							],
+							"path": [
+								"maps",
+								"api",
+								"place",
+								"details",
+								"json"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "place_id%2Cname%2Ctype%2Cgeometry%2Crating"
+								},
+								{
+									"key": "place_id",
+									"value": "ChIJ68aBlEKuEmsRHUA9oME5Zh0"
+								},
+								{
+									"key": "key",
+									"value": "AIzaSyDfslCfzFfgGVfkNoMrSKbz6XiQdOZDTWc"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TripmonkeyOps",
+			"item": [
+				{
+					"name": "Notifications",
+					"item": [
+						{
+							"name": "Get Notifications for User",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1/notifications/:id",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"path": [
+										"notifications",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "1927d274-5a32-4a93-8535-d3d2528e078f"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Workspace",
+					"item": [
+						{
+							"name": "Adding a new Workspace",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// No field to save in the response\r",
+											"// Add a comment to inform that no field is saved\r",
+											"if (pm.response.text()) {\r",
+											"    let resJson = pm.response.json();\r",
+											"    if (\"workspace\" in resJson) {\r",
+											"        pm.environment.set(\"workspace\", resJson[\"workspace\"][\"wid\"]);\r",
+											"    }\r",
+											"}\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "",
+										"value": "",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://127.0.0.1/workspace",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"path": [
+										"workspace"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": null,
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch a Workspace",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "",
+										"value": "",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://127.0.0.1/workspace/:id",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"path": [
+										"workspace",
+										":id"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": null,
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "{{workspace}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Adding another User to workspace",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "",
+										"value": "",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"op\": \"add\",\r\n    \"path\": \"collaborators\",\r\n    \"value\": {\r\n        \"user_id\": \"b441a660-1020-4b50-869d-b8db5eabee50\" \r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://127.0.0.1/workspace/:id",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"path": [
+										"workspace",
+										":id"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": null,
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "{{workspace}}",
+											"description": "Workspace"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Adding place to workspace",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "",
+										"value": "",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"op\": \"add\",\r\n    \"path\": \"location_lists/0\",\r\n    \"value\": {\r\n        \"place_id\": \"ChIJ68aBlEKuEmsRHUA9oME5Zh0\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://127.0.0.1/workspace/:id",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"path": [
+										"workspace",
+										":id"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": null,
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "{{workspace}}",
+											"description": "Workspace"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}
