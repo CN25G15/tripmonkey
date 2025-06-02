@@ -186,8 +186,6 @@ profiles:
 
 # Environment for developing and testing the python microservices (abstract away from java)
   - name: py-dev
-    activation:
-      - command: dev
         # skaffold dev --profile py-dev
     manifests:
       rawYaml:
@@ -299,6 +297,63 @@ profiles:
           context: build/workspace-rest-service
           docker:
             dockerfile: src/main/docker/Dockerfile.multistage-jvm
+
+  # Environment for locally testing the java microservices running natively
+  - name: jvm-native
+        # skaffold dev --profile native-test
+
+    manifests:
+      rawYaml:
+        - k8s/environments/0.development/deploy/deployments/jvm-native/*
+        - k8s/environments/0.development/deploy/deployments/misc/*
+        - k8s/environments/0.development/deploy/scalability/*
+        - k8s/environments/0.development/deploy/services/jvm/*
+        - k8s/environments/0.development/deploy/services/misc/*
+        - k8s/environments/0.development/deploy/tripmonkey-ingress-conf.yaml
+
+    portForward:
+      - resourceType: Service
+        resourceName: ingress-nginx-controller
+        namespace: default
+        port: 80
+        localPort: 80
+      - resourceType: Service
+        resourceName: debug-mongo-express-service
+        namespace: default
+        port: 8081
+        localPort: 81
+      - resourceType: Service
+        resourceName: grafana-svc
+        namespace: default
+        port: 3000
+        localPort: 83
+
+    build:
+      local:
+        push: false
+      artifacts:
+
+        # java services
+
+        - image: notification-service-image-native
+          context: build/notification-service #docker build context
+          docker:
+            dockerfile: src/main/docker/Dockerfile.multistage-native
+
+        - image: workspace-service-image-native
+          context: build/workspace-service
+          docker:
+            dockerfile: src/main/docker/Dockerfile.multistage-native
+
+        - image: database-service-image-native
+          context: build/workspace-db-service
+          docker:
+            dockerfile: src/main/docker/Dockerfile.multistage-native
+
+        - image: workspace-rest-image-native
+          context: build/workspace-rest-service
+          docker:
+            dockerfile: src/main/docker/Dockerfile.multistage-native
 
   - name: test
 
