@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recomendations-service
+  
+spec:
+  selector:
+    matchLabels:
+      app: recomendations-service
+  template:
+    metadata:
+      labels:
+        app: recomendations-service
+    spec:
+      containers:
+        - name: webapp
+          image: gcr.io/cn25-g15-tripmonkey/recommendations-service-image
+          ports:
+            - containerPort: 50051
+            - containerPort: 5002

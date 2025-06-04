@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workspace-rest-deployment
+spec:
+  selector:
+    matchLabels:
+      app: workspace-rest-app
+  template:
+    metadata:
+      labels:
+        app: workspace-rest-app
+    spec:
+      containers:
+        - name: workspace-rest-app
+          image: gcr.io/cn25-g15-tripmonkey/workspace-rest-image-multi
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /q/health/ready
+              port: 8080
+            initialDelaySeconds: 90
+          livenessProbe:
+            httpGet:
+              path: /q/health/live
+              port: 8080
+            initialDelaySeconds: 90
+          env:
+            - name: SERVICE_PORT
+              value: "8080"
+            - name: PATCH_APPLIER_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: SERVICE_HOST
+            - name: PATCH_APPLIER_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: GRPC_PORT
+            - name: WORKSPACE_REQUEST_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: SERVICE_HOST
+            - name: WORKSPACE_REQUEST_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: GRPC_PORT
+            - name: WORKSPACE_CREATOR_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: SERVICE_HOST
+            - name: WORKSPACE_CREATOR_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: GRPC_PORT
+
+          # Java env vars
+            - name: QUARKUS_LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: LOGGER_LEVEL
+            - name: JAVA_DEBUG
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: JAVA_DEBUG
+          resources:
+            requests:
+              memory: "1Gi"
+            limits:
+              memory: "1Gi"
+          volumeMounts:
+            - name: config
+              mountPath: "/config"
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: workspace-dev-env

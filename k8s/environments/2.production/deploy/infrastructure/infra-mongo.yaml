@@ -1,0 +1,43 @@
+apiVersion: mongodbcommunity.mongodb.com/v1
+kind: MongoDBCommunity
+metadata:
+  name: workspace-mongodb
+spec:
+  members: 2
+  arbiters: 1
+  type: ReplicaSet
+  version: "6.0.5"
+  security:
+    authentication:
+      modes: ["SCRAM"]
+  users:
+    - name: workspace-mongo-user
+      db: admin
+      passwordSecretRef:
+        name: workspace-mongo-user-password
+      connectionStringSecretNamespace: default
+      connectionStringSecretName: conn-string
+      scramCredentialsSecretName: scramalogic
+      roles:
+        - name: dbOwner
+          db: admin
+        - name: dbOwner
+          db: tripmonkey
+        - name: clusterAdmin
+          db: admin
+    - name: high
+      db: admin
+      passwordSecretRef:
+        name: high
+      connectionStringSecretNamespace: default
+      connectionStringSecretName: high-conn-string
+      scramCredentialsSecretName: scramalogic-high
+      roles:
+        - name: root
+          db: admin
+        - name: clusterAdmin
+          db: admin
+        - name: root
+          db: tripmonkey
+  additionalConnectionStringConfig:
+    readPreference: primary

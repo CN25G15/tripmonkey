@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prod-ingress
+  annotations:
+    kubernetes.io/ingressClassName: "gce"
+    #kubernetes.io/ingress.regional-static-ip-name: 34.142.97.213
+
+spec:
+  rules:
+      - http:
+          paths:
+          - path: /notifications
+            pathType: Prefix
+            backend:
+              service:
+                name: workspace-notifications-service
+                port:
+                  number: 8080
+          - path: /workspace
+            pathType: Prefix
+            backend:
+              service:
+                name: workspace-rest-service
+                port:
+                  number: 8080

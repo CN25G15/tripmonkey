@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: workspace-dev-env
+data:
+  GRPC_PORT: "9095"
+  KAFKA_BOOTSTRAP_SERVERS: "workspacemq-kafka-bootstrap:9092"
+  KAFKA_NOTIFICATIONS_TOPIC: "notifications"
+  MONGO_HOST: "mongodb://mongodb:27017"
+  MONGO_DATABASE: "workspaces"
+  DB_HOST: "workspace-database-service"
+  SERVICE_HOST: "workspace-core-service"
+  LOGGER_LEVEL: "INFO"
+  JAVA_DEBUG: "true"
+

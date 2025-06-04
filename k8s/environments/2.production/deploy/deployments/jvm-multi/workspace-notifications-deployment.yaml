@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workspace-notifications-deployment
+spec:
+  selector:
+    matchLabels:
+      app: workspace-notifications-app
+  template:
+    metadata:
+      labels:
+        app: workspace-notifications-app
+    spec:
+      serviceAccountName: topic-peeker
+      initContainers:
+        - name: wait-for-kafkatopic
+          image: bitnami/kubectl:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Waiting for KafkaTopic 'notifications' to be Ready..."
+              
+              until [ "$(curl -sf \
+                -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" \
+                --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
+                https://kubernetes.default.svc/apis/kafka.strimzi.io/v1beta2/namespaces/default/kafkatopics/notifications \
+                | jq -r '.status.conditions[]? | select(.type=="Ready") | .status')" = "True" ]; do
+              
+                echo "KafkaTopic not ready yet. Waiting..."
+                sleep 3
+              done
+              
+              echo "KafkaTopic is Ready!"
+
+      containers:
+        - name: workspace-notifications-app
+          image: gcr.io/cn25-g15-tripmonkey/notification-service-image-multi
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /q/health/ready
+              port: 8080
+            initialDelaySeconds: 90
+          livenessProbe:
+            httpGet:
+              path: /q/health/live
+              port: 8080
+            initialDelaySeconds: 90
+          env:
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: KAFKA_BOOTSTRAP_SERVERS
+            - name: SERVICE_PORT
+              value: "8080"
+            - name: KAFKA_NOTIFICATIONS_TOPIC
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: KAFKA_NOTIFICATIONS_TOPIC
+
+            # Java env vars
+            - name: QUARKUS_LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: LOGGER_LEVEL
+            - name: JAVA_DEBUG
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: JAVA_DEBUG
+
+          resources:
+            requests:
+              memory: "1Gi"
+            limits:
+              memory: "1Gi"
+          volumeMounts:
+            - name: config
+              mountPath: "/config"
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: workspace-dev-env

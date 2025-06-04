@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: workspace-notifications-service
+spec:
+  type: ClusterIP
+  selector:
+    app: workspace-notifications-app
+  ports:
+    - name: notifications-port
+      port: 8080
+      targetPort: 8080
+    - name: java-debug-port
+      port: 5005
+      targetPort: 5005
+    - name: prometheus-port
+      port: 9000
+      targetPort: 9000

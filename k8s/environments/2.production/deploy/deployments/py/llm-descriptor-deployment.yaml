@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: descriptor-service
+  
+spec:
+  selector:
+    matchLabels:
+      app: descriptor-service
+  template:
+    metadata:
+      labels:
+        app: descriptor-service
+    spec:
+      containers:
+        - name: webapp
+          image: gcr.io/cn25-g15-tripmonkey/descriptor-service-image
+          ports:
+            - containerPort: 50051
+            - containerPort: 5002

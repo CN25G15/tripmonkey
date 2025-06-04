@@ -472,23 +472,23 @@ manifests:
 
   rawYaml:
     # config and secrets - NOTE for posterity: skaffold doesnt support multiple resources in a single manifest
-    - k8s/environments/0.development/deploy/configurations/*
-    - k8s/environments/0.development/deploy/rbac/kafka/*
-    - k8s/environments/0.development/deploy/rbac/secrets/*
+    - k8s/environments/2.production/deploy/configurations/*
+    - k8s/environments/2.production/deploy/rbac/kafka/*
+    - k8s/environments/2.production/deploy/rbac/secrets/*
 
     # infra dependencies
-    - k8s/environments/0.development/deploy/infrastructure/infra-kafka.yaml
-    - k8s/environments/0.development/deploy/telemetry/*
-    - k8s/environments/0.development/deploy/infrastructure/*
+    - k8s/environments/2.production/deploy/infrastructure/infra-kafka.yaml
+    - k8s/environments/2.production/deploy/telemetry/*
+    - k8s/environments/2.production/deploy/infrastructure/*
 
     # app
-    - k8s/environments/0.development/deploy/infrastructure/tripmonkey-ingress-conf.yaml
-    - k8s/environments/0.development/deploy/deployments/jvm-multi/*
-    - k8s/environments/0.development/deploy/deployments/py/*
-    - k8s/environments/0.development/deploy/scalability/*
-    - k8s/environments/0.development/deploy/services/jvm/*
-    - k8s/environments/0.development/deploy/services/py/*
-    - k8s/environments/0.development/deploy/services/misc/*
+    - k8s/environments/2.production/deploy/infrastructure/tripmonkey-ingress-conf.yaml
+    - k8s/environments/2.production/deploy/deployments/jvm-multi/*
+    - k8s/environments/2.production/deploy/deployments/py/*
+    - k8s/environments/2.production/deploy/scalability/*
+    - k8s/environments/2.production/deploy/services/jvm/*
+    - k8s/environments/2.production/deploy/services/py/*
+    - k8s/environments/2.production/deploy/services/misc/*
 
 portForward:
   - resourceType: Service

@@ -1,0 +1,119 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workspace-database-deployment
+  
+spec:
+  selector:
+    matchLabels:
+      app: workspace-database-app
+  template:
+    metadata:
+      labels:
+        app: workspace-database-app
+    spec:
+      serviceAccountName: secret-peeker
+
+      initContainers:
+        - name: wait-for-secrets-and-pod
+          image: curlimages/curl:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Waiting for conn-string and high-conn-string secrets..."
+              
+              until curl -sf -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" \
+                --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
+                https://kubernetes.default.svc/api/v1/namespaces/default/secrets/conn-string; do
+                echo "Waiting for conn-string..."
+                sleep 2
+              done
+              
+              until curl -sf -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" \
+                --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
+                https://kubernetes.default.svc/api/v1/namespaces/default/secrets/high-conn-string; do
+                echo "Waiting for high-conn-string..."
+                sleep 2
+              done
+              
+              echo "Secrets are ready. Proceeding..."
+
+      containers:
+        - name: workspace-database-app
+          image: gcr.io/cn25-g15-tripmonkey/database-service-image-multi
+          ports:
+            - containerPort: 9095
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /q/health/ready
+              port: 8080
+            initialDelaySeconds: 90
+          livenessProbe:
+            httpGet:
+              path: /q/health/live
+              port: 8080
+            initialDelaySeconds: 90
+          env:
+            - name: GRPC_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: GRPC_PORT
+            - name: MONGO_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: conn-string
+                  key: connectionString.standardSrv
+            - name: MONGO_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: MONGO_DATABASE
+            - name: QUARKUS_MONGODB_CREDENTIALS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: conn-string
+                  key: username
+              value:
+            - name: QUARKUS_MONGODB_CREDENTIALS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: conn-string
+                  key: password
+
+            # Java env vars
+            - name: QUARKUS_LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: LOGGER_LEVEL
+            - name: QUARKUS_MONGODB_CREDENTIALS_AUTH-MECHANISM
+              value: "SCRAM-SHA-256"
+            - name: JAVA_DEBUG
+              valueFrom:
+                configMapKeyRef:
+                  name: workspace-dev-env
+                  key: JAVA_DEBUG
+
+
+          resources:
+            requests:
+              memory: "1Gi"
+            limits:
+              memory: "1Gi"
+          volumeMounts:
+            - name: config
+              mountPath: "/config"
+              readOnly: true
+            - name: secrets
+              mountPath: "/etc/secrets"
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: workspace-dev-env
+        - name: secrets
+          secret:
+            secretName: workspace-secrets

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: trends-rest-service
+spec:
+  type: ClusterIP
+  selector:
+    app: trends-rest
+  ports:
+    - name: rest-port
+      port: 80
+      targetPort: 8080

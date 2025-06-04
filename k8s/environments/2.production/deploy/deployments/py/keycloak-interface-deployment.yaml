@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak-interface
+  
+spec:
+  selector:
+    matchLabels:
+      app: keycloak-interface
+  template:
+    metadata:
+      labels:
+        app: keycloak-interface
+    spec:
+      containers:
+        - name: keycloak
+          image: gcr.io/cn25-g15-tripmonkey/keycloak-interface-image
+          ports:
+            - containerPort: 9523
