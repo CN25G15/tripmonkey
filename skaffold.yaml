@@ -9,8 +9,38 @@ profiles:
     activation:
       - command: dev
 
+    deploy:
+      kubectl:
+        hooks:
+          before:
+            - host:
+                command: [ "kubectl","apply","-f","k8s/misc/kafka/" ]
+            - host:
+                command: [ "kubectl","apply","-f","k8s/misc/infra-ingress.yaml" ]
+            - host:
+                command: ["kubectl","apply","-f","build/mongodb-kubernetes-operator/config/crd/bases/mongodbcommunity.mongodb.com_mongodbcommunity.yaml"]
+            - host:
+                command: ["kubectl","apply","-f","build/mongodb-kubernetes-operator/deploy/clusterwide/"]
+            - host:
+                command: ["kubectl","apply","-f","build/mongodb-kubernetes-operator/config/rbac/"]
+            - host:
+                command: ["kubectl","apply","-f","build/mongodb-kubernetes-operator/config/manager/manager.yaml"]
+
     manifests:
+
       rawYaml:
+        # config and secrets - NOTE for posterity: skaffold doesnt support multiple resources in a single manifest
+        - k8s/environments/0.development/deploy/configurations/*
+        - k8s/environments/0.development/deploy/rbac/kafka/*
+        - k8s/environments/0.development/deploy/rbac/secrets/*
+
+        # infra dependencies
+        - k8s/environments/0.development/deploy/infrastructure/infra-kafka.yaml
+        - k8s/environments/0.development/deploy/telemetry/*
+        - k8s/environments/0.development/deploy/infrastructure/*
+
+        # app
+        - k8s/environments/0.development/deploy/infrastructure/tripmonkey-ingress-conf.yaml
         - k8s/environments/0.development/deploy/deployments/jvm/*
         - k8s/environments/0.development/deploy/deployments/py/*
         - k8s/environments/0.development/deploy/deployments/misc/*
@@ -18,7 +48,6 @@ profiles:
         - k8s/environments/0.development/deploy/services/jvm/*
         - k8s/environments/0.development/deploy/services/py/*
         - k8s/environments/0.development/deploy/services/misc/*
-        - k8s/environments/0.development/deploy/tripmonkey-ingress-conf.yaml
 
     portForward:
       - resourceType: Service
@@ -63,6 +92,8 @@ profiles:
       local:
         push: false
       artifacts:
+
+
         # python services
         - image: admin-panel-image
           context: build/admin_panel
@@ -184,11 +215,14 @@ profiles:
               - src: 'target/quarkus-app/quarkus/'
                 dest: /deployments/quarkus/
 
-# Environment for developing and testing the python microservices (abstract away from java)
+  # Environment for developing and testing the python microservices (abstract away from java)
   - name: py-dev
-        # skaffold dev --profile py-dev
+    # skaffold dev --profile py-dev
     manifests:
       rawYaml:
+        - k8s/environments/0.development/deploy/configurations/*
+        - k8s/environments/0.development/deploy/infrastructure/*
+        - k8s/environments/0.development/deploy/telemetry/*
         - k8s/environments/0.development/deploy/deployments/jvm-multi/*
         - k8s/environments/0.development/deploy/deployments/py/*
         - k8s/environments/0.development/deploy/deployments/misc/*
@@ -196,7 +230,6 @@ profiles:
         - k8s/environments/0.development/deploy/services/jvm/*
         - k8s/environments/0.development/deploy/services/py/*
         - k8s/environments/0.development/deploy/services/misc/*
-        - k8s/environments/0.development/deploy/tripmonkey-ingress-conf.yaml
 
     portForward:
       - resourceType: Service
@@ -300,7 +333,7 @@ profiles:
 
   # Environment for locally testing the java microservices running natively
   - name: jvm-native
-        # skaffold dev --profile native-test
+    # skaffold dev --profile native-test
 
     manifests:
       rawYaml:
@@ -358,4 +391,116 @@ profiles:
   - name: test
 
   - name: prod
+
+# Actual GKE deploy
+
+build:
+  local:
+    push: true
+    useBuildkit: true
+  artifacts:
+    - image: gcr.io/cn25-g15-tripmonkey/admin-panel-image
+      context: build/admin_panel
+      docker:
+        dockerfile: Dockerfile
+
+
+    - image: gcr.io/cn25-g15-tripmonkey/descriptor-service-image
+      context: build/descriptor-service
+      docker:
+        dockerfile: Dockerfile
+
+
+    - image: gcr.io/cn25-g15-tripmonkey/keycloak-interface-image
+      context: build/keycloak_interface
+      docker:
+        dockerfile: Dockerfile
+
+    - image: gcr.io/cn25-g15-tripmonkey/recommendations-service-image
+      context: build/recomendations-service
+      docker:
+        dockerfile: Dockerfile
+
+    - image: gcr.io/cn25-g15-tripmonkey/trends-service-image
+      context: build/trends-service
+      docker:
+        dockerfile: Dockerfile
+
+    - image: gcr.io/cn25-g15-tripmonkey/workspace-backup-image
+      context: build/workspace_backup
+      docker:
+        dockerfile: Dockerfile
+
+    # java services
+
+    - image: gcr.io/cn25-g15-tripmonkey/notification-service-image-multi
+      context: build/notification-service #docker build context
+      docker:
+        dockerfile: src/main/docker/Dockerfile.multistage-jvm
+
+    - image: gcr.io/cn25-g15-tripmonkey/workspace-service-image-multi
+      context: build/workspace-service
+      docker:
+        dockerfile: src/main/docker/Dockerfile.multistage-jvm
+
+    - image: gcr.io/cn25-g15-tripmonkey/database-service-image-multi
+      context: build/workspace-db-service
+      docker:
+        dockerfile: src/main/docker/Dockerfile.multistage-jvm
+
+    - image: gcr.io/cn25-g15-tripmonkey/workspace-rest-image-multi
+      context: build/workspace-rest-service
+      docker:
+        dockerfile: src/main/docker/Dockerfile.multistage-jvm
+
+deploy:
+  kubectl:
+    hooks:
+      before:
+        - host:
+            command: [ "kubectl","apply","-f","k8s/misc/kafka/" ]
+        - host:
+            command: ["kubectl","apply","-f","build/mongodb-kubernetes-operator/config/crd/bases/mongodbcommunity.mongodb.com_mongodbcommunity.yaml"]
+        - host:
+            command: ["kubectl","apply","-f","build/mongodb-kubernetes-operator/deploy/clusterwide/"]
+        - host:
+            command: ["kubectl","apply","-f","build/mongodb-kubernetes-operator/config/rbac/"]
+        - host:
+            command: ["kubectl","apply","-f","build/mongodb-kubernetes-operator/config/manager/manager.yaml"]
+
+manifests:
+
+  rawYaml:
+    # config and secrets - NOTE for posterity: skaffold doesnt support multiple resources in a single manifest
+    - k8s/environments/0.development/deploy/configurations/*
+    - k8s/environments/0.development/deploy/rbac/kafka/*
+    - k8s/environments/0.development/deploy/rbac/secrets/*
+
+    # infra dependencies
+    - k8s/environments/0.development/deploy/infrastructure/infra-kafka.yaml
+    - k8s/environments/0.development/deploy/telemetry/*
+    - k8s/environments/0.development/deploy/infrastructure/*
+
+    # app
+    - k8s/environments/0.development/deploy/infrastructure/tripmonkey-ingress-conf.yaml
+    - k8s/environments/0.development/deploy/deployments/jvm-multi/*
+    - k8s/environments/0.development/deploy/deployments/py/*
+    - k8s/environments/0.development/deploy/scalability/*
+    - k8s/environments/0.development/deploy/services/jvm/*
+    - k8s/environments/0.development/deploy/services/py/*
+    - k8s/environments/0.development/deploy/services/misc/*
+
+portForward:
+  - resourceType: Service
+    resourceName: gce-internal
+    namespace: default
+    port: 80
+    localPort: 80
+  - resourceType: Service
+    resourceName: grafana-svc
+    namespace: default
+    port: 3000
+    localPort: 83
+
+
 

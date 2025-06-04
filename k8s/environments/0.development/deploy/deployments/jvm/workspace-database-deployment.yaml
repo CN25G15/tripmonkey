@@ -12,6 +12,33 @@ spec:
       labels:
         app: workspace-database-app
     spec:
+      serviceAccountName: secret-peeker
+
+      initContainers:
+        - name: wait-for-secrets-and-pod
+          image: curlimages/curl:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Waiting for conn-string and high-conn-string secrets..."
+      
+              until curl -sf -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" \
+                --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
+                https://kubernetes.default.svc/api/v1/namespaces/default/secrets/conn-string; do
+                echo "Waiting for conn-string..."
+                sleep 2
+              done
+      
+              until curl -sf -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" \
+                --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
+                https://kubernetes.default.svc/api/v1/namespaces/default/secrets/high-conn-string; do
+                echo "Waiting for high-conn-string..."
+                sleep 2
+              done
+      
+              echo "Secrets are ready. Proceeding..."
+
       containers:
         - name: workspace-database-app
           image: database-service-image

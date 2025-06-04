@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: bind-kafkatopic-reader
+  namespace: default
+subjects:
+  - kind: ServiceAccount
+    name: topic-peeker  # Replace with your actual service account
+roleRef:
+  kind: Role
+  name: kafkatopic-reader
+  apiGroup: rbac.authorization.k8s.io

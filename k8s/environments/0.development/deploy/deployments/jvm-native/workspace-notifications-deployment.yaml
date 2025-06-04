@@ -11,6 +11,28 @@ spec:
       labels:
         app: workspace-notifications-app
     spec:
+      serviceAccountName: topic-peeker
+      initContainers:
+        - name: wait-for-kafkatopic
+          image: bitnami/kubectl:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Waiting for KafkaTopic 'notifications' to be Ready..."
+              
+              until [ "$(curl -sf \
+                -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" \
+                --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
+                https://kubernetes.default.svc/apis/kafka.strimzi.io/v1beta2/namespaces/default/kafkatopics/notifications \
+                | jq -r '.status.conditions[]? | select(.type=="Ready") | .status')" = "True" ]; do
+              
+                echo "KafkaTopic not ready yet. Waiting..."
+                sleep 3
+              done
+              
+              echo "KafkaTopic is Ready!"
+
       containers:
         - name: workspace-notifications-app
           image: notification-service-image-native

@@ -30,10 +30,5 @@ minikube start --profile tripmonkey
 minikube addons enable metrics-server
 minikube addons enable ingress
 ECHO "Installing dependencies (Kafka and Mongo Operators) for environment: %env%"
-kubectl apply -f https://strimzi.io/install/latest?namespace=default -n default
-kubectl apply -f build/mongodb-kubernetes-operator/config/crd/bases/mongodbcommunity.mongodb.com_mongodbcommunity.yaml
-kubectl apply -f build/mongodb-kubernetes-operator/deploy/clusterwide
-kubectl apply -k build/mongodb-kubernetes-operator/config/rbac/ --namespace default
-kubectl create -f build/mongodb-kubernetes-operator/config/manager/manager.yaml --namespace default
-kubectl apply -f k8s/environments/%target%/pre-deploy
-
+CALL install-ingress.bat
+skaffold dev

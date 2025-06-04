@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: grafana-svc
+spec:
+  type: NodePort
+  selector:
+    app: grafana
+    purpose: monitoring-demo
+  ports:
+    - name: grafanaui
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
